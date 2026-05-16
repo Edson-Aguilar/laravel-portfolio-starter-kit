@@ -52,6 +52,37 @@ composer run starter
 
 Open `/login` and sign in with `admin@example.com` / `password`.
 
+## WSL + Nginx
+
+This project includes an example Nginx server block at `infra/nginx/starter-kit.test`.
+
+Local domain:
+
+```text
+http://starter-kit.test
+```
+
+The Windows hosts file needs:
+
+```text
+127.0.0.1 starter-kit.test
+```
+
+Install the Nginx server block in WSL:
+
+```bash
+sudo install -m 644 infra/nginx/starter-kit.test /etc/nginx/sites-available/starter-kit.test
+sudo ln -sfn /etc/nginx/sites-available/starter-kit.test /etc/nginx/sites-enabled/starter-kit.test
+sudo nginx -t
+sudo service nginx reload
+```
+
+Update the local environment:
+
+```bash
+APP_URL=http://starter-kit.test
+```
+
 ## Testing
 
 ```bash
