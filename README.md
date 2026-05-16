@@ -47,7 +47,7 @@ npm run build
 Start the development server:
 
 ```bash
-composer run dev
+composer run starter
 ```
 
 Open `/login` and sign in with `admin@example.com` / `password`.
@@ -80,6 +80,7 @@ Uploaded project images are stored on the `public` disk under `projects/`. Run `
 
 ```bash
 php artisan migrate:fresh --seed
+composer run starter
 php artisan test
 vendor/bin/pint
 npm run build
