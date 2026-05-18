@@ -1,4 +1,4 @@
-<div class="grid gap-6 xl:grid-cols-[minmax(0,1fr)_26rem]">
+<div class="space-y-6">
     <section class="ui-card relative min-w-0 overflow-hidden">
         <x-admin.skeleton-table />
 
@@ -85,54 +85,64 @@
         </div>
     </section>
 
-    <aside class="ui-card h-fit p-5">
-        <div class="mb-5">
-            <h2 class="text-lg font-bold text-zinc-950 dark:text-white">{{ $editingId ? 'Editar proyecto' : 'Crear proyecto' }}</h2>
-            <p class="text-sm text-zinc-500 dark:text-zinc-400">Mantén el contenido del portafolio claro y visual.</p>
+    @if ($showForm)
+        <div class="fixed inset-0 z-50 flex items-end justify-center bg-zinc-950/50 p-4 backdrop-blur-sm sm:items-center" role="dialog" aria-modal="true" aria-labelledby="project-form-title">
+            <section class="ui-card max-h-[calc(100vh-2rem)] w-full max-w-2xl overflow-y-auto p-5 sm:p-6">
+                <div class="mb-5 flex items-start justify-between gap-4">
+                    <div>
+                        <h2 id="project-form-title" class="text-lg font-bold text-zinc-950 dark:text-white">{{ $editingId ? 'Editar proyecto' : 'Crear proyecto' }}</h2>
+                        <p class="text-sm text-zinc-500 dark:text-zinc-400">Mantén el contenido del portafolio claro y visual.</p>
+                    </div>
+                    <button type="button" wire:click="resetForm" class="admin-icon-button" aria-label="Cerrar formulario">
+                        <x-icon name="x-mark" class="h-5 w-5" />
+                    </button>
+                </div>
+
+                <form wire:submit="save" class="grid gap-4 md:grid-cols-2">
+                    <div class="md:col-span-2">
+                        <label class="block text-sm font-semibold text-zinc-700 dark:text-zinc-200">Título</label>
+                        <input wire:model.live="title" class="form-control mt-2">
+                        @error('title') <p class="mt-1 text-sm text-red-600">{{ $message }}</p> @enderror
+                    </div>
+                    <div>
+                        <label class="block text-sm font-semibold text-zinc-700 dark:text-zinc-200">Slug</label>
+                        <input wire:model="slug" class="form-control mt-2">
+                        @error('slug') <p class="mt-1 text-sm text-red-600">{{ $message }}</p> @enderror
+                    </div>
+                    <div>
+                        <label class="block text-sm font-semibold text-zinc-700 dark:text-zinc-200">Estado</label>
+                        <select wire:model="projectStatus" class="form-control mt-2">
+                            <option value="draft">Borrador</option>
+                            <option value="published">Publicado</option>
+                            <option value="archived">Archivado</option>
+                        </select>
+                        @error('projectStatus') <p class="mt-1 text-sm text-red-600">{{ $message }}</p> @enderror
+                    </div>
+                    <div class="md:col-span-2">
+                        <label class="block text-sm font-semibold text-zinc-700 dark:text-zinc-200">Descripción</label>
+                        <textarea wire:model="description" rows="5" class="form-control mt-2"></textarea>
+                        @error('description') <p class="mt-1 text-sm text-red-600">{{ $message }}</p> @enderror
+                    </div>
+                    <div class="md:col-span-2">
+                        <label class="block text-sm font-semibold text-zinc-700 dark:text-zinc-200">Imagen</label>
+                        <input type="file" wire:model="image" accept=".jpg,.jpeg,.png,.webp,image/jpeg,image/png,image/webp" class="form-control mt-2">
+                        @error('image') <p class="mt-1 text-sm text-red-600">{{ $message }}</p> @enderror
+                        <div wire:loading wire:target="image" class="mt-3 h-28 animate-pulse rounded-2xl bg-zinc-200 dark:bg-white/10"></div>
+                        @if ($image)
+                            <img src="{{ $image->temporaryUrl() }}" alt="" class="mt-3 h-40 w-full rounded-2xl object-cover">
+                        @elseif ($currentImagePath)
+                            <img src="{{ Storage::url($currentImagePath) }}" alt="" class="mt-3 h-40 w-full rounded-2xl object-cover">
+                        @endif
+                    </div>
+                    <div class="flex flex-col gap-2 md:col-span-2 sm:flex-row">
+                        <button class="btn-primary" wire:loading.attr="disabled" wire:target="save">
+                            <x-icon name="arrow-path" class="hidden h-4 w-4 animate-spin" wire:loading.class.remove="hidden" wire:target="save" />Guardar</button>
+                        <button type="button" wire:click="resetForm" wire:loading.attr="disabled" wire:target="save" class="btn-secondary">Cancelar</button>
+                    </div>
+                </form>
+            </section>
         </div>
-        <form wire:submit="save" class="space-y-4">
-            <div>
-                <label class="block text-sm font-semibold text-zinc-700 dark:text-zinc-200">Título</label>
-                <input wire:model.live="title" class="form-control mt-2">
-                @error('title') <p class="mt-1 text-sm text-red-600">{{ $message }}</p> @enderror
-            </div>
-            <div>
-                <label class="block text-sm font-semibold text-zinc-700 dark:text-zinc-200">Slug</label>
-                <input wire:model="slug" class="form-control mt-2">
-                @error('slug') <p class="mt-1 text-sm text-red-600">{{ $message }}</p> @enderror
-            </div>
-            <div>
-                <label class="block text-sm font-semibold text-zinc-700 dark:text-zinc-200">Descripción</label>
-                <textarea wire:model="description" rows="5" class="form-control mt-2"></textarea>
-                @error('description') <p class="mt-1 text-sm text-red-600">{{ $message }}</p> @enderror
-            </div>
-            <div>
-                <label class="block text-sm font-semibold text-zinc-700 dark:text-zinc-200">Estado</label>
-                <select wire:model="projectStatus" class="form-control mt-2">
-                    <option value="draft">Borrador</option>
-                    <option value="published">Publicado</option>
-                    <option value="archived">Archivado</option>
-                </select>
-                @error('projectStatus') <p class="mt-1 text-sm text-red-600">{{ $message }}</p> @enderror
-            </div>
-            <div>
-                <label class="block text-sm font-semibold text-zinc-700 dark:text-zinc-200">Imagen</label>
-                <input type="file" wire:model="image" accept=".jpg,.jpeg,.png,.webp,image/jpeg,image/png,image/webp" class="form-control mt-2">
-                @error('image') <p class="mt-1 text-sm text-red-600">{{ $message }}</p> @enderror
-                <div wire:loading wire:target="image" class="mt-3 h-28 animate-pulse rounded-2xl bg-zinc-200 dark:bg-white/10"></div>
-                @if ($image)
-                    <img src="{{ $image->temporaryUrl() }}" alt="" class="mt-3 h-32 w-full rounded-2xl object-cover">
-                @elseif ($currentImagePath)
-                    <img src="{{ Storage::url($currentImagePath) }}" alt="" class="mt-3 h-32 w-full rounded-2xl object-cover">
-                @endif
-            </div>
-            <div class="flex flex-col gap-2 sm:flex-row">
-                <button class="btn-primary" wire:loading.attr="disabled" wire:target="save">
-                    <x-icon name="arrow-path" class="hidden h-4 w-4 animate-spin" wire:loading.class.remove="hidden" wire:target="save" />Guardar</button>
-                <button type="button" wire:click="resetForm" wire:loading.attr="disabled" wire:target="save" class="btn-secondary">Cancelar</button>
-            </div>
-        </form>
-    </aside>
+    @endif
 
     <x-admin.confirm-modal
         :show="$confirmingDeleteId !== null"

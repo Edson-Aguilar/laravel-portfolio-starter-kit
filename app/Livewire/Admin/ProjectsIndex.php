@@ -44,6 +44,8 @@ class ProjectsIndex extends Component
 
     public ?int $confirmingDeleteId = null;
 
+    public bool $showForm = false;
+
     public function mount(): void
     {
         $this->authorize('viewAny', Project::class);
@@ -71,6 +73,7 @@ class ProjectsIndex extends Component
         $this->authorize('create', Project::class);
 
         $this->resetForm();
+        $this->showForm = true;
     }
 
     public function edit(int $projectId): void
@@ -86,6 +89,7 @@ class ProjectsIndex extends Component
         $this->projectStatus = $project->status;
         $this->currentImagePath = $project->image_path;
         $this->image = null;
+        $this->showForm = true;
     }
 
     public function save(): void
@@ -184,6 +188,7 @@ class ProjectsIndex extends Component
             'currentImagePath',
         ]);
         $this->projectStatus = 'draft';
+        $this->showForm = false;
         $this->resetValidation();
     }
 

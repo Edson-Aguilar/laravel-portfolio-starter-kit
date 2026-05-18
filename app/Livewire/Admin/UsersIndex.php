@@ -37,6 +37,8 @@ class UsersIndex extends Component
 
     public ?int $confirmingDeleteId = null;
 
+    public bool $showForm = false;
+
     public function mount(): void
     {
         $this->authorize('viewAny', User::class);
@@ -57,6 +59,7 @@ class UsersIndex extends Component
         $this->authorize('create', User::class);
 
         $this->resetForm();
+        $this->showForm = true;
     }
 
     public function edit(int $userId): void
@@ -70,6 +73,7 @@ class UsersIndex extends Component
         $this->email = $user->email;
         $this->password = '';
         $this->selectedRole = $user->roles()->first()?->name ?? 'user';
+        $this->showForm = true;
     }
 
     public function save(): void
@@ -139,6 +143,7 @@ class UsersIndex extends Component
     {
         $this->reset(['editingId', 'name', 'email', 'password']);
         $this->selectedRole = 'user';
+        $this->showForm = false;
         $this->resetValidation();
     }
 

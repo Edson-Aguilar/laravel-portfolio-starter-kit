@@ -1,4 +1,4 @@
-<div class="grid gap-6 xl:grid-cols-[minmax(0,1fr)_24rem]">
+<div class="space-y-6">
     <section class="ui-card relative min-w-0 overflow-hidden">
         <x-admin.skeleton-table />
 
@@ -73,43 +73,53 @@
         </div>
     </section>
 
-    <aside class="ui-card h-fit p-5">
-        <div class="mb-5">
-            <h2 class="text-lg font-bold text-zinc-950 dark:text-white">{{ $editingId ? 'Editar usuario' : 'Crear usuario' }}</h2>
-            <p class="text-sm text-zinc-500 dark:text-zinc-400">Mantén credenciales y roles ordenados.</p>
+    @if ($showForm)
+        <div class="fixed inset-0 z-50 flex items-end justify-center bg-zinc-950/50 p-4 backdrop-blur-sm sm:items-center" role="dialog" aria-modal="true" aria-labelledby="user-form-title">
+            <section class="ui-card max-h-[calc(100vh-2rem)] w-full max-w-xl overflow-y-auto p-5 sm:p-6">
+                <div class="mb-5 flex items-start justify-between gap-4">
+                    <div>
+                        <h2 id="user-form-title" class="text-lg font-bold text-zinc-950 dark:text-white">{{ $editingId ? 'Editar usuario' : 'Crear usuario' }}</h2>
+                        <p class="text-sm text-zinc-500 dark:text-zinc-400">Mantén credenciales y roles ordenados.</p>
+                    </div>
+                    <button type="button" wire:click="resetForm" class="admin-icon-button" aria-label="Cerrar formulario">
+                        <x-icon name="x-mark" class="h-5 w-5" />
+                    </button>
+                </div>
+
+                <form wire:submit="save" class="space-y-4">
+                    <div>
+                        <label class="block text-sm font-semibold text-zinc-700 dark:text-zinc-200">Nombre</label>
+                        <input wire:model="name" class="form-control mt-2">
+                        @error('name') <p class="mt-1 text-sm text-red-600">{{ $message }}</p> @enderror
+                    </div>
+                    <div>
+                        <label class="block text-sm font-semibold text-zinc-700 dark:text-zinc-200">Email</label>
+                        <input type="email" wire:model="email" class="form-control mt-2">
+                        @error('email') <p class="mt-1 text-sm text-red-600">{{ $message }}</p> @enderror
+                    </div>
+                    <div>
+                        <label class="block text-sm font-semibold text-zinc-700 dark:text-zinc-200">Contraseña</label>
+                        <input type="password" wire:model="password" class="form-control mt-2">
+                        @error('password') <p class="mt-1 text-sm text-red-600">{{ $message }}</p> @enderror
+                    </div>
+                    <div>
+                        <label class="block text-sm font-semibold text-zinc-700 dark:text-zinc-200">Rol</label>
+                        <select wire:model="selectedRole" class="form-control mt-2">
+                            @foreach ($roles as $roleOption)
+                                <option value="{{ $roleOption->name }}">{{ ucfirst($roleOption->name) }}</option>
+                            @endforeach
+                        </select>
+                        @error('selectedRole') <p class="mt-1 text-sm text-red-600">{{ $message }}</p> @enderror
+                    </div>
+                    <div class="flex flex-col gap-2 sm:flex-row">
+                        <button class="btn-primary" wire:loading.attr="disabled" wire:target="save">
+                            <x-icon name="arrow-path" class="hidden h-4 w-4 animate-spin" wire:loading.class.remove="hidden" wire:target="save" />Guardar</button>
+                        <button type="button" wire:click="resetForm" wire:loading.attr="disabled" wire:target="save" class="btn-secondary">Cancelar</button>
+                    </div>
+                </form>
+            </section>
         </div>
-        <form wire:submit="save" class="space-y-4">
-            <div>
-                <label class="block text-sm font-semibold text-zinc-700 dark:text-zinc-200">Nombre</label>
-                <input wire:model="name" class="form-control mt-2">
-                @error('name') <p class="mt-1 text-sm text-red-600">{{ $message }}</p> @enderror
-            </div>
-            <div>
-                <label class="block text-sm font-semibold text-zinc-700 dark:text-zinc-200">Email</label>
-                <input type="email" wire:model="email" class="form-control mt-2">
-                @error('email') <p class="mt-1 text-sm text-red-600">{{ $message }}</p> @enderror
-            </div>
-            <div>
-                <label class="block text-sm font-semibold text-zinc-700 dark:text-zinc-200">Contraseña</label>
-                <input type="password" wire:model="password" class="form-control mt-2">
-                @error('password') <p class="mt-1 text-sm text-red-600">{{ $message }}</p> @enderror
-            </div>
-            <div>
-                <label class="block text-sm font-semibold text-zinc-700 dark:text-zinc-200">Rol</label>
-                <select wire:model="selectedRole" class="form-control mt-2">
-                    @foreach ($roles as $roleOption)
-                        <option value="{{ $roleOption->name }}">{{ ucfirst($roleOption->name) }}</option>
-                    @endforeach
-                </select>
-                @error('selectedRole') <p class="mt-1 text-sm text-red-600">{{ $message }}</p> @enderror
-            </div>
-            <div class="flex flex-col gap-2 sm:flex-row">
-                <button class="btn-primary" wire:loading.attr="disabled" wire:target="save">
-                    <x-icon name="arrow-path" class="hidden h-4 w-4 animate-spin" wire:loading.class.remove="hidden" wire:target="save" />Guardar</button>
-                <button type="button" wire:click="resetForm" wire:loading.attr="disabled" wire:target="save" class="btn-secondary">Cancelar</button>
-            </div>
-        </form>
-    </aside>
+    @endif
 
     <x-admin.confirm-modal
         :show="$confirmingDeleteId !== null"
