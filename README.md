@@ -1,6 +1,6 @@
 # Laravel Portfolio Starter Kit
 
-A professional Laravel starter kit for portfolio and small admin projects. It includes authentication, role-based access, a dashboard, user management, project management with image uploads, filters, demo seeders and Pest tests.
+Starter kit profesional para portafolios y paneles administrativos pequeños. Incluye autenticación, autorización por roles, dashboard, CRUD de usuarios, CRUD de proyectos con uploads seguros, filtros, seeders demo, tema visual configurable y pruebas Pest.
 
 ## Stack
 
@@ -8,31 +8,34 @@ A professional Laravel starter kit for portfolio and small admin projects. It in
 - Livewire 4
 - Tailwind CSS 4
 - Spatie Laravel Permission
+- MySQL
 - Pest
 - Vite
 
-## Features
+## Funcionalidades
 
-- Admin dashboard with project and user metrics
-- Roles: `admin`, `editor`, `user`
-- User CRUD restricted to admins
-- Project CRUD restricted to admins and editors
-- Project image upload to the public disk
-- Search and status/role filters
-- Demo seeders with ready-to-use accounts
-- Public portfolio landing page that lists published projects
+- Dashboard administrativo responsive con soporte dark mode.
+- Roles base: `admin`, `editor`, `user`.
+- CRUD de usuarios protegido para `admin`.
+- CRUD de proyectos protegido para `admin` y `editor`.
+- Upload de imágenes de proyectos en disco `public` con validación de tipo, tamaño y dimensiones.
+- Filtros y buscador en usuarios/proyectos.
+- Módulo de apariencia para logo, colores del sistema y fuente.
+- Seeders con cuentas demo listas para probar.
+- Landing pública con proyectos publicados.
+- Tests de acceso por rol, acciones Livewire, uploads y rutas protegidas.
 
-## Demo Accounts
+## Cuentas Demo
 
-All demo accounts use the password `password`.
+Todas las cuentas usan la contraseña `password`.
 
-| Role | Email |
+| Rol | Email |
 | --- | --- |
 | Admin | `admin@example.com` |
 | Editor | `editor@example.com` |
 | User | `user@example.com` |
 
-## Installation
+## Instalación
 
 ```bash
 composer install
@@ -44,31 +47,31 @@ php artisan migrate --seed
 npm run build
 ```
 
-Start the development server:
+Servidor local con el script del proyecto:
 
 ```bash
 composer run starter
 ```
 
-Open `/login` and sign in with `admin@example.com` / `password`.
+Abre `/login` e inicia sesión con `admin@example.com` / `password`.
 
 ## WSL + Nginx
 
-This project includes an example Nginx server block at `infra/nginx/starter-kit.test`.
+El proyecto incluye un server block de ejemplo en `infra/nginx/starter-kit.test`.
 
-Local domain:
+Dominio local:
 
 ```text
 http://starter-kit.test
 ```
 
-The Windows hosts file needs:
+Entrada requerida en el archivo hosts de Windows:
 
 ```text
 127.0.0.1 starter-kit.test
 ```
 
-Install the Nginx server block in WSL:
+Instalar el server block en WSL:
 
 ```bash
 sudo install -m 644 infra/nginx/starter-kit.test /etc/nginx/sites-available/starter-kit.test
@@ -77,37 +80,62 @@ sudo nginx -t
 sudo service nginx reload
 ```
 
-Update the local environment:
+Permisos locales para que PHP-FPM pueda escribir cache, logs y sesiones:
 
 ```bash
-APP_URL=http://starter-kit.test
+chmod -R a+rwX storage bootstrap/cache
 ```
 
-## Testing
+Variables importantes en `.env`:
+
+```dotenv
+APP_URL=http://starter-kit.test
+DB_CONNECTION=mysql
+DB_HOST=127.0.0.1
+DB_PORT=3306
+DB_DATABASE=starter_kit
+DB_USERNAME=tu_usuario
+DB_PASSWORD=tu_password
+```
+
+## Seguridad Y Autorización
+
+- Las rutas admin usan middleware `auth` y `role`.
+- Las acciones Livewire críticas también autorizan en backend con policies.
+- `admin` puede gestionar usuarios, proyectos y apariencia.
+- `editor` puede gestionar proyectos, pero no usuarios ni apariencia.
+- `user` solo accede al dashboard.
+- Un admin no puede eliminar su propia cuenta ni dejar el sistema sin administradores.
+- Los slugs de proyectos se normalizan y se validan como URLs limpias.
+- Los uploads aceptan `jpg`, `jpeg`, `png` y `webp`, máximo 2 MB y dimensiones controladas.
+
+## Tests
 
 ```bash
 php artisan test
 ```
 
-Or run Pest directly:
+Ejecutar Pest directamente:
 
 ```bash
 vendor/bin/pest
 ```
 
-## Roles And Access
+Los tests usan la base `starter_kit_testing` cuando está configurada en `phpunit.xml`.
 
-- `admin`: dashboard, user CRUD, project CRUD
-- `editor`: dashboard, project CRUD
-- `user`: dashboard only
+## Roles Y Acceso
 
-Role middleware aliases are configured in `bootstrap/app.php`.
+- `admin`: dashboard, CRUD de usuarios, CRUD de proyectos, apariencia.
+- `editor`: dashboard, CRUD de proyectos.
+- `user`: dashboard.
 
-## Project Images
+Los aliases de middleware de rol están configurados en `bootstrap/app.php`.
 
-Uploaded project images are stored on the `public` disk under `projects/`. Run `php artisan storage:link` after installation so images are available through `/storage`.
+## Imágenes De Proyectos
 
-## Useful Commands
+Las imágenes se guardan en el disco `public`, dentro de `projects/`. Ejecuta `php artisan storage:link` después de instalar para exponerlas por `/storage`.
+
+## Comandos Útiles
 
 ```bash
 php artisan migrate:fresh --seed
@@ -117,6 +145,6 @@ vendor/bin/pint
 npm run build
 ```
 
-## License
+## Licencia
 
 MIT

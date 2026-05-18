@@ -14,9 +14,9 @@
             <a href="{{ route('home') }}" class="font-semibold tracking-tight">Portfolio Starter Kit</a>
             <div class="flex items-center gap-3">
                 @auth
-                    <a href="{{ route('dashboard') }}" class="rounded bg-zinc-950 px-3 py-2 text-sm font-medium text-white">Dashboard</a>
+                    <a href="{{ route('dashboard') }}" class="rounded bg-zinc-950 px-3 py-2 text-sm font-medium text-white">Panel</a>
                 @else
-                    <a href="{{ route('login') }}" class="rounded border border-zinc-300 px-3 py-2 text-sm font-medium text-zinc-700 hover:bg-zinc-100">Login</a>
+                    <a href="{{ route('login') }}" class="rounded border border-zinc-300 px-3 py-2 text-sm font-medium text-zinc-700 hover:bg-zinc-100">Entrar</a>
                 @endauth
             </div>
         </div>
@@ -26,11 +26,11 @@
         <section class="mx-auto grid max-w-6xl gap-10 px-6 py-16 lg:grid-cols-[1fr_26rem] lg:items-center">
             <div>
                 <p class="text-sm font-medium uppercase tracking-wide text-zinc-500">Laravel, Livewire, Tailwind CSS</p>
-                <h1 class="mt-4 text-4xl font-semibold tracking-tight md:text-6xl">Professional portfolio admin starter.</h1>
-                <p class="mt-6 max-w-2xl text-lg text-zinc-600">A focused Laravel base with role management, admin dashboard, project CRUD, image uploads, filtering, demo data and Pest tests.</p>
+                <h1 class="mt-4 text-4xl font-semibold tracking-tight md:text-6xl">Starter kit profesional para administrar portafolios.</h1>
+                <p class="mt-6 max-w-2xl text-lg text-zinc-600">Una base Laravel enfocada con roles, panel admin, CRUD de proyectos, subida de imágenes, filtros, datos demo y pruebas Pest.</p>
                 <div class="mt-8 flex flex-wrap gap-3">
-                    <a href="{{ route('login') }}" class="rounded bg-zinc-950 px-4 py-2.5 text-sm font-semibold text-white hover:bg-zinc-800">Open admin</a>
-                    <a href="#projects" class="rounded border border-zinc-300 px-4 py-2.5 text-sm font-semibold text-zinc-700 hover:bg-white">View projects</a>
+                    <a href="{{ route('login') }}" class="rounded bg-zinc-950 px-4 py-2.5 text-sm font-semibold text-white hover:bg-zinc-800">Abrir admin</a>
+                    <a href="#projects" class="rounded border border-zinc-300 px-4 py-2.5 text-sm font-semibold text-zinc-700 hover:bg-white">Ver proyectos</a>
                 </div>
             </div>
             <div class="rounded border border-zinc-200 bg-white p-6 shadow-sm">
@@ -59,8 +59,8 @@
             <div class="mx-auto max-w-6xl px-6 py-14">
                 <div class="mb-8 flex items-end justify-between gap-4">
                     <div>
-                        <p class="text-sm font-medium text-zinc-500">Published work</p>
-                        <h2 class="mt-2 text-2xl font-semibold tracking-tight">Latest projects</h2>
+                        <p class="text-sm font-medium text-zinc-500">Trabajo publicado</p>
+                        <h2 class="mt-2 text-2xl font-semibold tracking-tight">Proyectos recientes</h2>
                     </div>
                 </div>
                 <div class="grid gap-5 md:grid-cols-2 lg:grid-cols-3">
@@ -77,7 +77,7 @@
                             </div>
                         </article>
                     @empty
-                        <p class="text-sm text-zinc-500">Run the demo seeders to show sample projects.</p>
+                        <p class="text-sm text-zinc-500">Ejecuta los seeders demo para mostrar proyectos de ejemplo.</p>
                     @endforelse
                 </div>
             </div>

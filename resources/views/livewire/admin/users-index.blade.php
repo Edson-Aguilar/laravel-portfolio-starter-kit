@@ -1,95 +1,121 @@
 <div class="grid gap-6 xl:grid-cols-[minmax(0,1fr)_24rem]">
-    <section class="min-w-0 rounded border border-zinc-200 bg-white">
-        <div class="flex flex-col gap-3 border-b border-zinc-200 p-4 md:flex-row md:items-center md:justify-between">
+    <section class="ui-card relative min-w-0 overflow-hidden">
+        <x-admin.skeleton-table />
+
+        <div class="flex flex-col gap-4 border-b border-zinc-100 p-5 dark:border-white/10 md:flex-row md:items-center md:justify-between">
             <div>
-                <h2 class="font-semibold">User management</h2>
-                <p class="text-sm text-zinc-500">Search, filter and manage user roles.</p>
+                <p class="text-xs font-bold uppercase tracking-wide text-[var(--brand-primary)]">Control de acceso</p>
+                <h2 class="mt-1 text-lg font-bold text-zinc-950 dark:text-white">Gestión de usuarios</h2>
+                <p class="text-sm text-zinc-500 dark:text-zinc-400">Busca, filtra y administra roles de cuenta.</p>
             </div>
-            <button wire:click="create" class="rounded bg-zinc-950 px-3 py-2 text-sm font-medium text-white hover:bg-zinc-800">New user</button>
+            <button wire:click="create" wire:loading.attr="disabled" wire:target="create,save,delete" class="btn-primary">
+                <x-icon name="plus" class="h-4 w-4" />
+                Nuevo usuario
+            </button>
         </div>
 
-        <div class="grid gap-3 border-b border-zinc-200 p-4 md:grid-cols-[minmax(0,1fr)_12rem]">
-            <input type="search" wire:model.live.debounce.300ms="search" placeholder="Search users" class="rounded border border-zinc-300 px-3 py-2 text-sm outline-none focus:border-zinc-950">
-            <select wire:model.live="role" class="rounded border border-zinc-300 px-3 py-2 text-sm outline-none focus:border-zinc-950">
-                <option value="">All roles</option>
+        <div class="grid gap-3 border-b border-zinc-100 p-5 dark:border-white/10 md:grid-cols-[minmax(0,1fr)_12rem]">
+            <label class="relative">
+                <x-icon name="magnifying-glass" class="pointer-events-none absolute left-3 top-2.5 h-5 w-5 text-zinc-400" />
+                <input type="search" wire:model.live.debounce.300ms="search" placeholder="Buscar usuarios" class="form-control pl-10">
+            </label>
+            <select wire:model.live="role" class="form-control">
+                <option value="">Todos los roles</option>
                 @foreach ($roles as $roleOption)
                     <option value="{{ $roleOption->name }}">{{ ucfirst($roleOption->name) }}</option>
                 @endforeach
             </select>
         </div>
 
-        @if (session('status'))
-            <div class="border-b border-emerald-200 bg-emerald-50 px-4 py-3 text-sm text-emerald-700">{{ session('status') }}</div>
-        @endif
-
         <div class="overflow-x-auto">
-            <table class="min-w-full divide-y divide-zinc-200 text-sm">
-                <thead class="bg-zinc-50 text-left text-xs uppercase text-zinc-500">
+            <table class="table-modern min-w-[720px]">
+                <thead>
                     <tr>
-                        <th class="px-4 py-3 font-semibold">Name</th>
-                        <th class="px-4 py-3 font-semibold">Email</th>
-                        <th class="px-4 py-3 font-semibold">Role</th>
-                        <th class="px-4 py-3 text-right font-semibold">Actions</th>
+                        <th class="text-left font-bold">Nombre</th>
+                        <th class="text-left font-bold">Email</th>
+                        <th class="text-left font-bold">Rol</th>
+                        <th class="text-right font-bold">Acciones</th>
                     </tr>
                 </thead>
-                <tbody class="divide-y divide-zinc-100">
+                <tbody>
                     @forelse ($users as $user)
-                        <tr wire:key="user-{{ $user->id }}">
-                            <td class="px-4 py-3 font-medium">{{ $user->name }}</td>
-                            <td class="px-4 py-3 text-zinc-600">{{ $user->email }}</td>
-                            <td class="px-4 py-3">
-                                <span class="rounded bg-zinc-100 px-2 py-1 text-xs font-medium text-zinc-700">{{ $user->roles->pluck('name')->join(', ') ?: 'user' }}</span>
+                        <tr wire:key="user-{{ $user->id }}" class="transition hover:bg-zinc-50/80 dark:hover:bg-white/5">
+                            <td>
+                                <div class="flex items-center gap-3">
+                                    <div class="flex h-10 w-10 items-center justify-center rounded-2xl bg-gradient-to-br from-[var(--brand-primary)] to-[var(--brand-secondary)] text-sm font-bold text-white">
+                                        {{ str($user->name)->substr(0, 1)->upper() }}
+                                    </div>
+                                    <span class="font-semibold text-zinc-950 dark:text-white">{{ $user->name }}</span>
+                                </div>
                             </td>
-                            <td class="px-4 py-3 text-right">
-                                <button wire:click="edit({{ $user->id }})" class="rounded px-2 py-1 text-sm font-medium text-zinc-700 hover:bg-zinc-100">Edit</button>
-                                <button wire:click="delete({{ $user->id }})" wire:confirm="Delete this user?" class="rounded px-2 py-1 text-sm font-medium text-red-600 hover:bg-red-50">Delete</button>
+                            <td class="text-zinc-600 dark:text-zinc-300">{{ $user->email }}</td>
+                            <td>
+                                <span class="rounded-full bg-zinc-100 px-3 py-1 text-xs font-bold text-zinc-700 dark:bg-white/10 dark:text-zinc-200">{{ $user->roles->pluck('name')->join(', ') ?: 'user' }}</span>
+                            </td>
+                            <td class="text-right">
+                                <button wire:click="edit({{ $user->id }})" wire:loading.attr="disabled" wire:target="edit({{ $user->id }})" class="btn-secondary mr-2 px-3 py-1.5">Editar</button>
+                                <button wire:click="confirmDelete({{ $user->id }})" wire:loading.attr="disabled" wire:target="confirmDelete({{ $user->id }})" class="btn-danger px-3 py-1.5">Eliminar</button>
                             </td>
                         </tr>
                     @empty
                         <tr>
-                            <td colspan="4" class="px-4 py-8 text-center text-zinc-500">No users found.</td>
+                            <td colspan="4">
+                                <x-admin.empty-state icon="users" title="No se encontraron usuarios" description="Ajusta la búsqueda o crea un usuario nuevo." />
+                            </td>
                         </tr>
                     @endforelse
                 </tbody>
             </table>
         </div>
 
-        <div class="border-t border-zinc-200 px-4 py-3">
+        <div class="border-t border-zinc-100 px-5 py-4 dark:border-white/10">
             {{ $users->links() }}
         </div>
     </section>
 
-    <aside class="rounded border border-zinc-200 bg-white p-5">
-        <h2 class="font-semibold">{{ $editingId ? 'Edit user' : 'Create user' }}</h2>
-        <form wire:submit="save" class="mt-5 space-y-4">
+    <aside class="ui-card h-fit p-5">
+        <div class="mb-5">
+            <h2 class="text-lg font-bold text-zinc-950 dark:text-white">{{ $editingId ? 'Editar usuario' : 'Crear usuario' }}</h2>
+            <p class="text-sm text-zinc-500 dark:text-zinc-400">Mantén credenciales y roles ordenados.</p>
+        </div>
+        <form wire:submit="save" class="space-y-4">
             <div>
-                <label class="block text-sm font-medium text-zinc-700">Name</label>
-                <input wire:model="name" class="mt-2 w-full rounded border border-zinc-300 px-3 py-2 text-sm outline-none focus:border-zinc-950">
+                <label class="block text-sm font-semibold text-zinc-700 dark:text-zinc-200">Nombre</label>
+                <input wire:model="name" class="form-control mt-2">
                 @error('name') <p class="mt-1 text-sm text-red-600">{{ $message }}</p> @enderror
             </div>
             <div>
-                <label class="block text-sm font-medium text-zinc-700">Email</label>
-                <input type="email" wire:model="email" class="mt-2 w-full rounded border border-zinc-300 px-3 py-2 text-sm outline-none focus:border-zinc-950">
+                <label class="block text-sm font-semibold text-zinc-700 dark:text-zinc-200">Email</label>
+                <input type="email" wire:model="email" class="form-control mt-2">
                 @error('email') <p class="mt-1 text-sm text-red-600">{{ $message }}</p> @enderror
             </div>
             <div>
-                <label class="block text-sm font-medium text-zinc-700">Password</label>
-                <input type="password" wire:model="password" class="mt-2 w-full rounded border border-zinc-300 px-3 py-2 text-sm outline-none focus:border-zinc-950">
+                <label class="block text-sm font-semibold text-zinc-700 dark:text-zinc-200">Contraseña</label>
+                <input type="password" wire:model="password" class="form-control mt-2">
                 @error('password') <p class="mt-1 text-sm text-red-600">{{ $message }}</p> @enderror
             </div>
             <div>
-                <label class="block text-sm font-medium text-zinc-700">Role</label>
-                <select wire:model="selectedRole" class="mt-2 w-full rounded border border-zinc-300 px-3 py-2 text-sm outline-none focus:border-zinc-950">
+                <label class="block text-sm font-semibold text-zinc-700 dark:text-zinc-200">Rol</label>
+                <select wire:model="selectedRole" class="form-control mt-2">
                     @foreach ($roles as $roleOption)
                         <option value="{{ $roleOption->name }}">{{ ucfirst($roleOption->name) }}</option>
                     @endforeach
                 </select>
                 @error('selectedRole') <p class="mt-1 text-sm text-red-600">{{ $message }}</p> @enderror
             </div>
-            <div class="flex gap-2">
-                <button class="rounded bg-zinc-950 px-3 py-2 text-sm font-medium text-white hover:bg-zinc-800">Save</button>
-                <button type="button" wire:click="resetForm" class="rounded border border-zinc-300 px-3 py-2 text-sm font-medium text-zinc-700 hover:bg-zinc-50">Cancel</button>
+            <div class="flex flex-col gap-2 sm:flex-row">
+                <button class="btn-primary" wire:loading.attr="disabled" wire:target="save">
+                    <x-icon name="arrow-path" class="hidden h-4 w-4 animate-spin" wire:loading.class.remove="hidden" wire:target="save" />Guardar</button>
+                <button type="button" wire:click="resetForm" wire:loading.attr="disabled" wire:target="save" class="btn-secondary">Cancelar</button>
             </div>
         </form>
     </aside>
+
+    <x-admin.confirm-modal
+        :show="$confirmingDeleteId !== null"
+        title="Eliminar usuario"
+        description="Este usuario se eliminará permanentemente."
+        confirm="Eliminar usuario"
+        action="delete"
+    />
 </div>

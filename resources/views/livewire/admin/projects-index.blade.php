@@ -1,118 +1,144 @@
 <div class="grid gap-6 xl:grid-cols-[minmax(0,1fr)_26rem]">
-    <section class="min-w-0 rounded border border-zinc-200 bg-white">
-        <div class="flex flex-col gap-3 border-b border-zinc-200 p-4 md:flex-row md:items-center md:justify-between">
+    <section class="ui-card relative min-w-0 overflow-hidden">
+        <x-admin.skeleton-table />
+
+        <div class="flex flex-col gap-4 border-b border-zinc-100 p-5 dark:border-white/10 md:flex-row md:items-center md:justify-between">
             <div>
-                <h2 class="font-semibold">Project management</h2>
-                <p class="text-sm text-zinc-500">Manage portfolio content, images and publishing status.</p>
+                <p class="text-xs font-bold uppercase tracking-wide text-[var(--brand-primary)]">Portfolio</p>
+                <h2 class="mt-1 text-lg font-bold text-zinc-950 dark:text-white">Gestión de proyectos</h2>
+                <p class="text-sm text-zinc-500 dark:text-zinc-400">Administra contenido, imágenes y estado de publicación.</p>
             </div>
-            <button wire:click="create" class="rounded bg-zinc-950 px-3 py-2 text-sm font-medium text-white hover:bg-zinc-800">New project</button>
+            <button wire:click="create" wire:loading.attr="disabled" wire:target="create,save,delete" class="btn-primary">
+                <x-icon name="plus" class="h-4 w-4" />
+                Nuevo proyecto
+            </button>
         </div>
 
-        <div class="grid gap-3 border-b border-zinc-200 p-4 md:grid-cols-[minmax(0,1fr)_12rem]">
-            <input type="search" wire:model.live.debounce.300ms="search" placeholder="Search projects" class="rounded border border-zinc-300 px-3 py-2 text-sm outline-none focus:border-zinc-950">
-            <select wire:model.live="status" class="rounded border border-zinc-300 px-3 py-2 text-sm outline-none focus:border-zinc-950">
-                <option value="">All statuses</option>
-                <option value="draft">Draft</option>
-                <option value="published">Published</option>
-                <option value="archived">Archived</option>
+        <div class="grid gap-3 border-b border-zinc-100 p-5 dark:border-white/10 md:grid-cols-[minmax(0,1fr)_12rem]">
+            <label class="relative">
+                <x-icon name="magnifying-glass" class="pointer-events-none absolute left-3 top-2.5 h-5 w-5 text-zinc-400" />
+                <input type="search" wire:model.live.debounce.300ms="search" placeholder="Buscar proyectos" class="form-control pl-10">
+            </label>
+            <select wire:model.live="status" class="form-control">
+                <option value="">Todos los estados</option>
+                <option value="draft">Borrador</option>
+                <option value="published">Publicado</option>
+                <option value="archived">Archivado</option>
             </select>
         </div>
 
-        @if (session('status'))
-            <div class="border-b border-emerald-200 bg-emerald-50 px-4 py-3 text-sm text-emerald-700">{{ session('status') }}</div>
-        @endif
-
         <div class="overflow-x-auto">
-            <table class="min-w-full divide-y divide-zinc-200 text-sm">
-                <thead class="bg-zinc-50 text-left text-xs uppercase text-zinc-500">
+            <table class="table-modern min-w-[780px]">
+                <thead>
                     <tr>
-                        <th class="px-4 py-3 font-semibold">Project</th>
-                        <th class="px-4 py-3 font-semibold">Status</th>
-                        <th class="px-4 py-3 font-semibold">Published</th>
-                        <th class="px-4 py-3 text-right font-semibold">Actions</th>
+                        <th class="text-left font-bold">Proyecto</th>
+                        <th class="text-left font-bold">Estado</th>
+                        <th class="text-left font-bold">Publicado</th>
+                        <th class="text-right font-bold">Acciones</th>
                     </tr>
                 </thead>
-                <tbody class="divide-y divide-zinc-100">
+                <tbody>
                     @forelse ($projects as $project)
-                        <tr wire:key="project-{{ $project->id }}">
-                            <td class="px-4 py-3">
+                        <tr wire:key="project-{{ $project->id }}" class="transition hover:bg-zinc-50/80 dark:hover:bg-white/5">
+                            <td>
                                 <div class="flex items-center gap-3">
-                                    <div class="h-12 w-16 overflow-hidden rounded bg-zinc-100">
+                                    <div class="flex h-14 w-20 items-center justify-center overflow-hidden rounded-2xl bg-gradient-to-br from-zinc-100 to-zinc-200 text-zinc-400 dark:from-white/10 dark:to-white/5">
                                         @if ($project->image_path)
                                             <img src="{{ Storage::url($project->image_path) }}" alt="" class="h-full w-full object-cover">
+                                        @else
+                                            <x-icon name="folder" class="h-5 w-5" />
                                         @endif
                                     </div>
                                     <div>
-                                        <p class="font-medium">{{ $project->title }}</p>
-                                        <p class="text-xs text-zinc-500">{{ $project->slug }}</p>
+                                        <p class="font-semibold text-zinc-950 dark:text-white">{{ $project->title }}</p>
+                                        <p class="text-xs text-zinc-500 dark:text-zinc-400">{{ $project->slug }}</p>
                                     </div>
                                 </div>
                             </td>
-                            <td class="px-4 py-3">
-                                <span class="rounded bg-zinc-100 px-2 py-1 text-xs font-medium text-zinc-700">{{ $project->status }}</span>
+                            <td>
+                                <span @class([
+                                    'rounded-full px-3 py-1 text-xs font-bold',
+                                    'bg-zinc-100 text-zinc-700 dark:bg-white/10 dark:text-zinc-200' => $project->status === 'draft',
+                                    'bg-emerald-50 text-emerald-700 dark:bg-emerald-400/10 dark:text-emerald-300' => $project->status === 'published',
+                                    'bg-amber-50 text-amber-700 dark:bg-amber-400/10 dark:text-amber-300' => $project->status === 'archived',
+                                ])>{{ ['draft' => 'Borrador', 'published' => 'Publicado', 'archived' => 'Archivado'][$project->status] ?? $project->status }}</span>
                             </td>
-                            <td class="px-4 py-3 text-zinc-600">{{ $project->published_at?->format('M d, Y') ?? '-' }}</td>
-                            <td class="px-4 py-3 text-right">
-                                <button wire:click="edit({{ $project->id }})" class="rounded px-2 py-1 text-sm font-medium text-zinc-700 hover:bg-zinc-100">Edit</button>
-                                <button wire:click="delete({{ $project->id }})" wire:confirm="Delete this project?" class="rounded px-2 py-1 text-sm font-medium text-red-600 hover:bg-red-50">Delete</button>
+                            <td class="text-zinc-600 dark:text-zinc-300">{{ $project->published_at?->format('d/m/Y') ?? '-' }}</td>
+                            <td class="text-right">
+                                <button wire:click="edit({{ $project->id }})" wire:loading.attr="disabled" wire:target="edit({{ $project->id }})" class="btn-secondary mr-2 px-3 py-1.5">Editar</button>
+                                <button wire:click="confirmDelete({{ $project->id }})" wire:loading.attr="disabled" wire:target="confirmDelete({{ $project->id }})" class="btn-danger px-3 py-1.5">Eliminar</button>
                             </td>
                         </tr>
                     @empty
                         <tr>
-                            <td colspan="4" class="px-4 py-8 text-center text-zinc-500">No projects found.</td>
+                            <td colspan="4">
+                                <x-admin.empty-state icon="folder" title="No se encontraron proyectos" description="Crea tu primer proyecto o ajusta los filtros activos." />
+                            </td>
                         </tr>
                     @endforelse
                 </tbody>
             </table>
         </div>
 
-        <div class="border-t border-zinc-200 px-4 py-3">
+        <div class="border-t border-zinc-100 px-5 py-4 dark:border-white/10">
             {{ $projects->links() }}
         </div>
     </section>
 
-    <aside class="rounded border border-zinc-200 bg-white p-5">
-        <h2 class="font-semibold">{{ $editingId ? 'Edit project' : 'Create project' }}</h2>
-        <form wire:submit="save" class="mt-5 space-y-4">
+    <aside class="ui-card h-fit p-5">
+        <div class="mb-5">
+            <h2 class="text-lg font-bold text-zinc-950 dark:text-white">{{ $editingId ? 'Editar proyecto' : 'Crear proyecto' }}</h2>
+            <p class="text-sm text-zinc-500 dark:text-zinc-400">Mantén el contenido del portafolio claro y visual.</p>
+        </div>
+        <form wire:submit="save" class="space-y-4">
             <div>
-                <label class="block text-sm font-medium text-zinc-700">Title</label>
-                <input wire:model.live="title" class="mt-2 w-full rounded border border-zinc-300 px-3 py-2 text-sm outline-none focus:border-zinc-950">
+                <label class="block text-sm font-semibold text-zinc-700 dark:text-zinc-200">Título</label>
+                <input wire:model.live="title" class="form-control mt-2">
                 @error('title') <p class="mt-1 text-sm text-red-600">{{ $message }}</p> @enderror
             </div>
             <div>
-                <label class="block text-sm font-medium text-zinc-700">Slug</label>
-                <input wire:model="slug" class="mt-2 w-full rounded border border-zinc-300 px-3 py-2 text-sm outline-none focus:border-zinc-950">
+                <label class="block text-sm font-semibold text-zinc-700 dark:text-zinc-200">Slug</label>
+                <input wire:model="slug" class="form-control mt-2">
                 @error('slug') <p class="mt-1 text-sm text-red-600">{{ $message }}</p> @enderror
             </div>
             <div>
-                <label class="block text-sm font-medium text-zinc-700">Description</label>
-                <textarea wire:model="description" rows="5" class="mt-2 w-full rounded border border-zinc-300 px-3 py-2 text-sm outline-none focus:border-zinc-950"></textarea>
+                <label class="block text-sm font-semibold text-zinc-700 dark:text-zinc-200">Descripción</label>
+                <textarea wire:model="description" rows="5" class="form-control mt-2"></textarea>
                 @error('description') <p class="mt-1 text-sm text-red-600">{{ $message }}</p> @enderror
             </div>
             <div>
-                <label class="block text-sm font-medium text-zinc-700">Status</label>
-                <select wire:model="projectStatus" class="mt-2 w-full rounded border border-zinc-300 px-3 py-2 text-sm outline-none focus:border-zinc-950">
-                    <option value="draft">Draft</option>
-                    <option value="published">Published</option>
-                    <option value="archived">Archived</option>
+                <label class="block text-sm font-semibold text-zinc-700 dark:text-zinc-200">Estado</label>
+                <select wire:model="projectStatus" class="form-control mt-2">
+                    <option value="draft">Borrador</option>
+                    <option value="published">Publicado</option>
+                    <option value="archived">Archivado</option>
                 </select>
                 @error('projectStatus') <p class="mt-1 text-sm text-red-600">{{ $message }}</p> @enderror
             </div>
             <div>
-                <label class="block text-sm font-medium text-zinc-700">Image</label>
-                <input type="file" wire:model="image" accept="image/*" class="mt-2 w-full rounded border border-zinc-300 px-3 py-2 text-sm">
+                <label class="block text-sm font-semibold text-zinc-700 dark:text-zinc-200">Imagen</label>
+                <input type="file" wire:model="image" accept=".jpg,.jpeg,.png,.webp,image/jpeg,image/png,image/webp" class="form-control mt-2">
                 @error('image') <p class="mt-1 text-sm text-red-600">{{ $message }}</p> @enderror
-                <div wire:loading wire:target="image" class="mt-2 text-sm text-zinc-500">Uploading...</div>
+                <div wire:loading wire:target="image" class="mt-3 h-28 animate-pulse rounded-2xl bg-zinc-200 dark:bg-white/10"></div>
                 @if ($image)
-                    <img src="{{ $image->temporaryUrl() }}" alt="" class="mt-3 h-28 w-full rounded object-cover">
+                    <img src="{{ $image->temporaryUrl() }}" alt="" class="mt-3 h-32 w-full rounded-2xl object-cover">
                 @elseif ($currentImagePath)
-                    <img src="{{ Storage::url($currentImagePath) }}" alt="" class="mt-3 h-28 w-full rounded object-cover">
+                    <img src="{{ Storage::url($currentImagePath) }}" alt="" class="mt-3 h-32 w-full rounded-2xl object-cover">
                 @endif
             </div>
-            <div class="flex gap-2">
-                <button class="rounded bg-zinc-950 px-3 py-2 text-sm font-medium text-white hover:bg-zinc-800">Save</button>
-                <button type="button" wire:click="resetForm" class="rounded border border-zinc-300 px-3 py-2 text-sm font-medium text-zinc-700 hover:bg-zinc-50">Cancel</button>
+            <div class="flex flex-col gap-2 sm:flex-row">
+                <button class="btn-primary" wire:loading.attr="disabled" wire:target="save">
+                    <x-icon name="arrow-path" class="hidden h-4 w-4 animate-spin" wire:loading.class.remove="hidden" wire:target="save" />Guardar</button>
+                <button type="button" wire:click="resetForm" wire:loading.attr="disabled" wire:target="save" class="btn-secondary">Cancelar</button>
             </div>
         </form>
     </aside>
+
+    <x-admin.confirm-modal
+        :show="$confirmingDeleteId !== null"
+        title="Eliminar proyecto"
+        description="Este proyecto y su imagen se eliminarán."
+        confirm="Eliminar proyecto"
+        action="delete"
+    />
 </div>
