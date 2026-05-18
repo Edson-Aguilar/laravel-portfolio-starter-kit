@@ -15,7 +15,7 @@ it('allows admins to access user management', function () {
     $this->actingAs($admin)
         ->get(route('admin.users'))
         ->assertOk()
-        ->assertSee('User management');
+        ->assertSee('Gestión de usuarios');
 });
 
 it('prevents users from accessing admin user management', function () {
