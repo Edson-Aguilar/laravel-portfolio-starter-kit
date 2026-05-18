@@ -24,6 +24,14 @@ Route::post('/logout', function () {
     return redirect()->route('login');
 })->middleware('auth')->name('logout');
 
+Route::get('/idioma/{locale}', function (string $locale) {
+    abort_unless(in_array($locale, ['es', 'en'], true), 404);
+
+    session(['locale' => $locale]);
+
+    return back();
+})->middleware('web')->name('locale.switch');
+
 Route::view('/dashboard', 'admin.dashboard')
     ->middleware('auth')
     ->name('dashboard');
@@ -35,3 +43,7 @@ Route::view('/admin/users', 'admin.users')
 Route::view('/admin/projects', 'admin.projects')
     ->middleware(['auth', 'role:admin|editor'])
     ->name('admin.projects');
+
+Route::view('/admin/appearance', 'admin.appearance')
+    ->middleware(['auth', 'role:admin'])
+    ->name('admin.appearance');
