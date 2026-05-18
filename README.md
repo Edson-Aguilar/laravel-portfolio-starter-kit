@@ -25,6 +25,19 @@ Starter kit profesional para portafolios y paneles administrativos pequeños. In
 - Landing pública con proyectos publicados.
 - Tests de acceso por rol, acciones Livewire, uploads y rutas protegidas.
 
+## Capturas Y Features
+
+El starter kit está preparado para mostrar capturas del portafolio en esta sección. Sugerencia para tu portafolio: agrega imágenes en `public/docs/` y enlázalas aquí.
+
+Features principales para mostrar:
+
+- Login y dashboard administrativo.
+- Sidebar moderna con modo light/dark.
+- CRUD de usuarios con roles.
+- CRUD de proyectos con filtros, buscador y subida de imágenes.
+- Módulo de apariencia para logo, paleta y fuente.
+- Landing pública con proyectos publicados.
+
 ## Cuentas Demo
 
 Todas las cuentas usan la contraseña `password`.
@@ -36,6 +49,14 @@ Todas las cuentas usan la contraseña `password`.
 | User | `user@example.com` |
 
 ## Instalación
+
+Requisitos:
+
+- PHP 8.3+
+- Composer
+- Node.js y npm
+- MySQL
+- Nginx con PHP-FPM si usarás el dominio `.test`
 
 ```bash
 composer install
@@ -98,6 +119,12 @@ DB_USERNAME=tu_usuario
 DB_PASSWORD=tu_password
 ```
 
+Base de datos de tests recomendada:
+
+```dotenv
+DB_DATABASE=starter_kit_testing
+```
+
 ## Seguridad Y Autorización
 
 - Las rutas admin usan middleware `auth` y `role`.
@@ -123,6 +150,20 @@ vendor/bin/pest
 
 Los tests usan la base `starter_kit_testing` cuando está configurada en `phpunit.xml`.
 
+## Build Frontend
+
+Compilar assets para producción:
+
+```bash
+npm run build
+```
+
+Durante desarrollo con Vite:
+
+```bash
+npm run dev
+```
+
 ## Roles Y Acceso
 
 - `admin`: dashboard, CRUD de usuarios, CRUD de proyectos, apariencia.
@@ -135,6 +176,66 @@ Los aliases de middleware de rol están configurados en `bootstrap/app.php`.
 
 Las imágenes se guardan en el disco `public`, dentro de `projects/`. Ejecuta `php artisan storage:link` después de instalar para exponerlas por `/storage`.
 
+## Estructura Del Proyecto
+
+```text
+app/Livewire/Admin/        Componentes Livewire del dashboard y CRUDs
+app/Policies/              Autorización backend por rol
+app/Support/BrandTheme.php Tema visual configurable
+database/seeders/          Roles, usuarios demo y proyectos demo
+resources/views/admin/     Entradas de vistas del panel admin
+resources/views/livewire/  Vistas Livewire
+resources/css/app.css      Estilos Tailwind y componentes UI
+routes/web.php             Rutas públicas, auth y admin
+tests/Feature/             Tests Pest de acceso, CRUD, uploads y tema
+infra/nginx/               Server block local para starter-kit.test
+```
+
+## Troubleshooting
+
+- Error de permisos en `storage` o `bootstrap/cache`:
+
+```bash
+chmod -R a+rwX storage bootstrap/cache
+```
+
+- Imágenes no visibles:
+
+```bash
+php artisan storage:link
+```
+
+- Cambios de `.env` no aplican:
+
+```bash
+php artisan config:clear
+php artisan cache:clear
+```
+
+- Nginx no carga el sitio:
+
+```bash
+sudo nginx -t
+sudo service nginx reload
+```
+
+- MySQL no conecta:
+
+Revisa `DB_HOST`, `DB_PORT`, `DB_DATABASE`, `DB_USERNAME` y `DB_PASSWORD` en `.env`. Para tests, confirma que exista la base `starter_kit_testing`.
+
+## Changelog
+
+### v1.0.0
+
+- Starter kit Laravel con Livewire, Tailwind CSS, Spatie Permission y Pest.
+- Dashboard admin con roles `admin`, `editor`, `user`.
+- CRUD de usuarios y proyectos con autorización backend.
+- Uploads seguros y transaccionales para proyectos y logo.
+- Módulo de apariencia con logo, colores sugeridos y fuente.
+- UI responsive con dark mode, sidebar colapsable, empty states, skeleton loaders, toasts y modales.
+- Tests de roles, accesos directos, CRUD, uploads, tema y protecciones del último admin.
+- Configuración local WSL con MySQL y Nginx para `starter-kit.test`.
+
 ## Comandos Útiles
 
 ```bash
@@ -143,6 +244,8 @@ composer run starter
 php artisan test
 vendor/bin/pint
 npm run build
+composer audit
+npm audit --audit-level=low
 ```
 
 ## Licencia
