@@ -38,14 +38,14 @@ it('creates users with roles from the Livewire CRUD', function () {
 
 it('creates projects from the Livewire CRUD', function () {
     Livewire::test(ProjectsIndex::class)
-        ->set('title', 'Portfolio CMS')
-        ->set('slug', 'portfolio-cms')
-        ->set('description', 'A polished Laravel portfolio admin.')
+        ->set('title', 'Demo Module')
+        ->set('slug', 'demo-module')
+        ->set('description', 'A polished Laravel admin starter module.')
         ->set('projectStatus', 'published')
         ->call('save')
         ->assertHasNoErrors();
 
-    expect(Project::where('slug', 'portfolio-cms')->where('status', 'published')->exists())->toBeTrue();
+    expect(Project::where('slug', 'demo-module')->where('status', 'published')->exists())->toBeTrue();
 });
 
 it('stores project images only on the public disk when the upload is valid', function () {
