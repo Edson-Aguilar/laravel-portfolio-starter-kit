@@ -1,8 +1,8 @@
 <?php
 
+use App\Livewire\Admin\AppearanceSettings;
 use App\Models\SystemSetting;
 use App\Models\User;
-use App\Livewire\Admin\AppearanceSettings;
 use App\Support\BrandTheme;
 use Illuminate\Support\Facades\Cache;
 use Livewire\Livewire;
