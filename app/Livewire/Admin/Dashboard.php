@@ -12,9 +12,9 @@ class Dashboard extends Component
     {
         return view('livewire.admin.dashboard', [
             'usersCount' => User::count(),
-            'projectsCount' => Project::count(),
-            'publishedCount' => Project::where('status', 'published')->count(),
-            'latestProjects' => Project::latest()->take(5)->get(),
+            'projectsCount' => config('starter.modules.projects') ? Project::count() : 0,
+            'publishedCount' => config('starter.modules.projects') ? Project::where('status', 'published')->count() : 0,
+            'latestProjects' => config('starter.modules.projects') ? Project::latest()->take(5)->get() : collect(),
         ]);
     }
 }

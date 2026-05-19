@@ -16,7 +16,7 @@
         </div>
     </section>
 
-    <div class="grid gap-4 md:grid-cols-3">
+    <div @class(['grid gap-4', 'md:grid-cols-3' => config('starter.modules.projects'), 'md:grid-cols-1' => ! config('starter.modules.projects')])>
         <div class="ui-card p-5">
             <div class="flex items-center justify-between">
                 <p class="text-sm font-medium text-zinc-500 dark:text-zinc-400">Usuarios</p>
@@ -26,46 +26,50 @@
             </div>
             <p class="mt-4 text-3xl font-bold text-zinc-950 dark:text-white">{{ $usersCount }}</p>
         </div>
-        <div class="ui-card p-5">
-            <div class="flex items-center justify-between">
-                <p class="text-sm font-medium text-zinc-500 dark:text-zinc-400">Proyectos</p>
-                <div class="rounded-xl bg-emerald-50 p-2 text-emerald-600 dark:bg-emerald-400/10 dark:text-emerald-300">
-                    <x-icon name="folder" class="h-5 w-5" />
+        @if (config('starter.modules.projects'))
+            <div class="ui-card p-5">
+                <div class="flex items-center justify-between">
+                    <p class="text-sm font-medium text-zinc-500 dark:text-zinc-400">Proyectos</p>
+                    <div class="rounded-xl bg-emerald-50 p-2 text-emerald-600 dark:bg-emerald-400/10 dark:text-emerald-300">
+                        <x-icon name="folder" class="h-5 w-5" />
+                    </div>
                 </div>
+                <p class="mt-4 text-3xl font-bold text-zinc-950 dark:text-white">{{ $projectsCount }}</p>
             </div>
-            <p class="mt-4 text-3xl font-bold text-zinc-950 dark:text-white">{{ $projectsCount }}</p>
-        </div>
-        <div class="ui-card p-5">
-            <div class="flex items-center justify-between">
-                <p class="text-sm font-medium text-zinc-500 dark:text-zinc-400">Publicados</p>
-                <div class="rounded-xl bg-orange-50 p-2 text-orange-600 dark:bg-orange-400/10 dark:text-orange-300">
-                    <x-icon name="check-circle" class="h-5 w-5" />
+            <div class="ui-card p-5">
+                <div class="flex items-center justify-between">
+                    <p class="text-sm font-medium text-zinc-500 dark:text-zinc-400">Publicados</p>
+                    <div class="rounded-xl bg-orange-50 p-2 text-orange-600 dark:bg-orange-400/10 dark:text-orange-300">
+                        <x-icon name="check-circle" class="h-5 w-5" />
+                    </div>
                 </div>
+                <p class="mt-4 text-3xl font-bold text-zinc-950 dark:text-white">{{ $publishedCount }}</p>
             </div>
-            <p class="mt-4 text-3xl font-bold text-zinc-950 dark:text-white">{{ $publishedCount }}</p>
-        </div>
+        @endif
     </div>
 
-    <section class="ui-card overflow-hidden">
-        <div class="flex items-center justify-between border-b border-zinc-100 px-5 py-4 dark:border-white/10">
-            <div>
-                <h2 class="font-bold text-zinc-950 dark:text-white">Proyectos recientes</h2>
-                <p class="text-sm text-zinc-500 dark:text-zinc-400">Entradas del portafolio actualizadas recientemente.</p>
-            </div>
-            <a href="{{ route('admin.projects') }}" class="btn-secondary hidden sm:inline-flex">Ver todos</a>
-        </div>
-        <div class="divide-y divide-zinc-100 dark:divide-white/10">
-            @forelse ($latestProjects as $project)
-                <div class="flex flex-col gap-3 px-5 py-4 sm:flex-row sm:items-center sm:justify-between">
-                    <div>
-                        <p class="font-semibold text-zinc-950 dark:text-white">{{ $project->title }}</p>
-                        <p class="text-sm text-zinc-500 dark:text-zinc-400">{{ $project->slug }}</p>
-                    </div>
-                    <span class="w-fit rounded-full bg-zinc-100 px-3 py-1 text-xs font-bold text-zinc-600 dark:bg-white/10 dark:text-zinc-200">{{ ['draft' => 'Borrador', 'published' => 'Publicado', 'archived' => 'Archivado'][$project->status] ?? $project->status }}</span>
+    @if (config('starter.modules.projects'))
+        <section class="ui-card overflow-hidden">
+            <div class="flex items-center justify-between border-b border-zinc-100 px-5 py-4 dark:border-white/10">
+                <div>
+                    <h2 class="font-bold text-zinc-950 dark:text-white">Proyectos recientes</h2>
+                    <p class="text-sm text-zinc-500 dark:text-zinc-400">Entradas del portafolio actualizadas recientemente.</p>
                 </div>
-            @empty
-                <x-admin.empty-state icon="folder" title="Aún no hay proyectos" description="Crea tu primer proyecto para alimentar este panel." />
-            @endforelse
-        </div>
-    </section>
+                <a href="{{ route('admin.projects') }}" class="btn-secondary hidden sm:inline-flex">Ver todos</a>
+            </div>
+            <div class="divide-y divide-zinc-100 dark:divide-white/10">
+                @forelse ($latestProjects as $project)
+                    <div class="flex flex-col gap-3 px-5 py-4 sm:flex-row sm:items-center sm:justify-between">
+                        <div>
+                            <p class="font-semibold text-zinc-950 dark:text-white">{{ $project->title }}</p>
+                            <p class="text-sm text-zinc-500 dark:text-zinc-400">{{ $project->slug }}</p>
+                        </div>
+                        <span class="w-fit rounded-full bg-zinc-100 px-3 py-1 text-xs font-bold text-zinc-600 dark:bg-white/10 dark:text-zinc-200">{{ ['draft' => 'Borrador', 'published' => 'Publicado', 'archived' => 'Archivado'][$project->status] ?? $project->status }}</span>
+                    </div>
+                @empty
+                    <x-admin.empty-state icon="folder" title="Aún no hay proyectos" description="Crea tu primer proyecto para alimentar este panel." />
+                @endforelse
+            </div>
+        </section>
+    @endif
 </div>

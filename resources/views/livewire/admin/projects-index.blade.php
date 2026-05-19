@@ -1,34 +1,30 @@
 <div class="space-y-6">
-    <section class="ui-card relative min-w-0 overflow-hidden">
+    <x-admin.card class="relative min-w-0 overflow-hidden">
         <x-admin.skeleton-table />
 
-        <div class="flex flex-col gap-4 border-b border-zinc-100 p-5 dark:border-white/10 md:flex-row md:items-center md:justify-between">
-            <div>
-                <p class="text-xs font-bold uppercase tracking-wide text-[var(--brand-primary)]">Portfolio</p>
-                <h2 class="mt-1 text-lg font-bold text-zinc-950 dark:text-white">Gestión de proyectos</h2>
-                <p class="text-sm text-zinc-500 dark:text-zinc-400">Administra contenido, imágenes y estado de publicación.</p>
-            </div>
-            <button wire:click="create" wire:loading.attr="disabled" wire:target="create,save,delete" class="btn-primary">
-                <x-icon name="plus" class="h-4 w-4" />
-                Nuevo proyecto
-            </button>
-        </div>
+        <x-admin.page-header eyebrow="Portfolio" title="Gestión de proyectos" description="Administra contenido, imágenes y estado de publicación.">
+            <x-slot:actions>
+                <x-admin.button wire:click="create" wire:loading.attr="disabled" wire:target="create,save,delete">
+                    <x-icon name="plus" class="h-4 w-4" />
+                    Nuevo proyecto
+                </x-admin.button>
+            </x-slot:actions>
+        </x-admin.page-header>
 
         <div class="grid gap-3 border-b border-zinc-100 p-5 dark:border-white/10 md:grid-cols-[minmax(0,1fr)_12rem]">
             <label class="relative">
                 <x-icon name="magnifying-glass" class="pointer-events-none absolute left-3 top-2.5 h-5 w-5 text-zinc-400" />
-                <input type="search" wire:model.live.debounce.300ms="search" placeholder="Buscar proyectos" class="form-control pl-10">
+                <x-admin.input type="search" wire:model.live.debounce.300ms="search" placeholder="Buscar proyectos" class="pl-10" />
             </label>
-            <select wire:model.live="status" class="form-control">
+            <x-admin.select wire:model.live="status">
                 <option value="">Todos los estados</option>
                 <option value="draft">Borrador</option>
                 <option value="published">Publicado</option>
                 <option value="archived">Archivado</option>
-            </select>
+            </x-admin.select>
         </div>
 
-        <div class="overflow-x-auto">
-            <table class="table-modern min-w-[780px]">
+        <x-admin.table min-width="780px">
                 <thead>
                     <tr>
                         <th class="text-left font-bold">Proyecto</th>
@@ -56,17 +52,14 @@
                                 </div>
                             </td>
                             <td>
-                                <span @class([
-                                    'rounded-full px-3 py-1 text-xs font-bold',
-                                    'bg-zinc-100 text-zinc-700 dark:bg-white/10 dark:text-zinc-200' => $project->status === 'draft',
-                                    'bg-emerald-50 text-emerald-700 dark:bg-emerald-400/10 dark:text-emerald-300' => $project->status === 'published',
-                                    'bg-amber-50 text-amber-700 dark:bg-amber-400/10 dark:text-amber-300' => $project->status === 'archived',
-                                ])>{{ ['draft' => 'Borrador', 'published' => 'Publicado', 'archived' => 'Archivado'][$project->status] ?? $project->status }}</span>
+                                <x-admin.badge :variant="['draft' => 'neutral', 'published' => 'success', 'archived' => 'warning'][$project->status] ?? 'neutral'">
+                                    {{ ['draft' => 'Borrador', 'published' => 'Publicado', 'archived' => 'Archivado'][$project->status] ?? $project->status }}
+                                </x-admin.badge>
                             </td>
                             <td class="text-zinc-600 dark:text-zinc-300">{{ $project->published_at?->format('d/m/Y') ?? '-' }}</td>
                             <td class="text-right">
-                                <button wire:click="edit({{ $project->id }})" wire:loading.attr="disabled" wire:target="edit({{ $project->id }})" class="btn-secondary mr-2 px-3 py-1.5">Editar</button>
-                                <button wire:click="confirmDelete({{ $project->id }})" wire:loading.attr="disabled" wire:target="confirmDelete({{ $project->id }})" class="btn-danger px-3 py-1.5">Eliminar</button>
+                                <x-admin.button variant="secondary" wire:click="edit({{ $project->id }})" wire:loading.attr="disabled" wire:target="edit({{ $project->id }})" class="mr-2 px-3 py-1.5">Editar</x-admin.button>
+                                <x-admin.button variant="danger" wire:click="confirmDelete({{ $project->id }})" wire:loading.attr="disabled" wire:target="confirmDelete({{ $project->id }})" class="px-3 py-1.5">Eliminar</x-admin.button>
                             </td>
                         </tr>
                     @empty
@@ -77,45 +70,37 @@
                         </tr>
                     @endforelse
                 </tbody>
-            </table>
-        </div>
+        </x-admin.table>
 
         <div class="border-t border-zinc-100 px-5 py-4 dark:border-white/10">
             {{ $projects->links() }}
         </div>
-    </section>
+    </x-admin.card>
 
-    @if ($showForm)
-        <div class="fixed inset-0 z-50 flex items-end justify-center bg-zinc-950/50 p-4 backdrop-blur-sm sm:items-center" role="dialog" aria-modal="true" aria-labelledby="project-form-title">
-            <section class="ui-card max-h-[calc(100vh-2rem)] w-full max-w-2xl overflow-y-auto p-5 sm:p-6">
-                <div class="mb-5 flex items-start justify-between gap-4">
-                    <div>
-                        <h2 id="project-form-title" class="text-lg font-bold text-zinc-950 dark:text-white">{{ $editingId ? 'Editar proyecto' : 'Crear proyecto' }}</h2>
-                        <p class="text-sm text-zinc-500 dark:text-zinc-400">Mantén el contenido del portafolio claro y visual.</p>
-                    </div>
-                    <button type="button" wire:click="resetForm" class="admin-icon-button" aria-label="Cerrar formulario">
-                        <x-icon name="x-mark" class="h-5 w-5" />
-                    </button>
-                </div>
-
+    <x-admin.modal :show="$showForm" id="project-form" :title="$editingId ? 'Editar proyecto' : 'Crear proyecto'" description="Mantén el contenido del portafolio claro y visual." class="max-w-2xl">
+        <x-slot:close>
+            <x-admin.button variant="icon" wire:click="resetForm" aria-label="Cerrar formulario">
+                <x-icon name="x-mark" class="h-5 w-5" />
+            </x-admin.button>
+        </x-slot:close>
                 <form wire:submit="save" class="grid gap-4 md:grid-cols-2">
                     <div class="md:col-span-2">
                         <label class="block text-sm font-semibold text-zinc-700 dark:text-zinc-200">Título</label>
-                        <input wire:model.live="title" class="form-control mt-2">
+                        <x-admin.input wire:model.live="title" class="mt-2" />
                         @error('title') <p class="mt-1 text-sm text-red-600">{{ $message }}</p> @enderror
                     </div>
                     <div>
                         <label class="block text-sm font-semibold text-zinc-700 dark:text-zinc-200">Slug</label>
-                        <input wire:model="slug" class="form-control mt-2">
+                        <x-admin.input wire:model="slug" class="mt-2" />
                         @error('slug') <p class="mt-1 text-sm text-red-600">{{ $message }}</p> @enderror
                     </div>
                     <div>
                         <label class="block text-sm font-semibold text-zinc-700 dark:text-zinc-200">Estado</label>
-                        <select wire:model="projectStatus" class="form-control mt-2">
+                        <x-admin.select wire:model="projectStatus" class="mt-2">
                             <option value="draft">Borrador</option>
                             <option value="published">Publicado</option>
                             <option value="archived">Archivado</option>
-                        </select>
+                        </x-admin.select>
                         @error('projectStatus') <p class="mt-1 text-sm text-red-600">{{ $message }}</p> @enderror
                     </div>
                     <div class="md:col-span-2">
@@ -125,7 +110,7 @@
                     </div>
                     <div class="md:col-span-2">
                         <label class="block text-sm font-semibold text-zinc-700 dark:text-zinc-200">Imagen</label>
-                        <input type="file" wire:model="image" accept=".jpg,.jpeg,.png,.webp,image/jpeg,image/png,image/webp" class="form-control mt-2">
+                        <x-admin.input type="file" wire:model="image" accept=".jpg,.jpeg,.png,.webp,image/jpeg,image/png,image/webp" class="mt-2" />
                         @error('image') <p class="mt-1 text-sm text-red-600">{{ $message }}</p> @enderror
                         <div wire:loading wire:target="image" class="mt-3 h-28 animate-pulse rounded-2xl bg-zinc-200 dark:bg-white/10"></div>
                         @if ($image)
@@ -135,14 +120,12 @@
                         @endif
                     </div>
                     <div class="flex flex-col gap-2 md:col-span-2 sm:flex-row">
-                        <button class="btn-primary" wire:loading.attr="disabled" wire:target="save">
-                            <x-icon name="arrow-path" class="hidden h-4 w-4 animate-spin" wire:loading.class.remove="hidden" wire:target="save" />Guardar</button>
-                        <button type="button" wire:click="resetForm" wire:loading.attr="disabled" wire:target="save" class="btn-secondary">Cancelar</button>
+                        <x-admin.button type="submit" wire:loading.attr="disabled" wire:target="save">
+                            <x-icon name="arrow-path" class="hidden h-4 w-4 animate-spin" wire:loading.class.remove="hidden" wire:target="save" />Guardar</x-admin.button>
+                        <x-admin.button variant="secondary" wire:click="resetForm" wire:loading.attr="disabled" wire:target="save">Cancelar</x-admin.button>
                     </div>
                 </form>
-            </section>
-        </div>
-    @endif
+    </x-admin.modal>
 
     <x-admin.confirm-modal
         :show="$confirmingDeleteId !== null"

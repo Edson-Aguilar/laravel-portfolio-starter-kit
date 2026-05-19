@@ -3,8 +3,8 @@
     $nav = [
         ['label' => __('Panel'), 'route' => 'dashboard', 'icon' => 'chart-bar', 'visible' => true],
         ['label' => __('Usuarios'), 'route' => 'admin.users', 'icon' => 'users', 'visible' => auth()->user()?->hasRole('admin')],
-        ['label' => __('Proyectos'), 'route' => 'admin.projects', 'icon' => 'folder', 'visible' => auth()->user()?->hasAnyRole(['admin', 'editor'])],
-        ['label' => __('Apariencia'), 'route' => 'admin.appearance', 'icon' => 'paint-brush', 'visible' => auth()->user()?->hasRole('admin')],
+        ['label' => __('Proyectos'), 'route' => 'admin.projects', 'icon' => 'folder', 'visible' => config('starter.modules.projects') && auth()->user()?->hasAnyRole(['admin', 'editor'])],
+        ['label' => __('Apariencia'), 'route' => 'admin.appearance', 'icon' => 'paint-brush', 'visible' => config('starter.modules.appearance') && auth()->user()?->hasRole('admin')],
     ];
 @endphp
 

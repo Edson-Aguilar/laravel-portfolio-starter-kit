@@ -7,7 +7,9 @@ use Illuminate\Support\Facades\Route;
 
 Route::get('/', function () {
     return view('welcome', [
-        'projects' => Project::where('status', 'published')->latest('published_at')->take(6)->get(),
+        'projects' => config('starter.modules.projects')
+            ? Project::where('status', 'published')->latest('published_at')->take(6)->get()
+            : collect(),
     ]);
 })->name('home');
 
@@ -42,8 +44,12 @@ Route::view('/admin/users', 'admin.users')
 
 Route::view('/admin/projects', 'admin.projects')
     ->middleware(['auth', 'role:admin|editor'])
+    ->can('viewProjectsModule')
     ->name('admin.projects');
 
 Route::view('/admin/appearance', 'admin.appearance')
     ->middleware(['auth', 'role:admin'])
+    ->can('viewAppearanceModule')
     ->name('admin.appearance');
+
+// starter:admin-routes

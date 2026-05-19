@@ -1,34 +1,30 @@
 <div class="space-y-6">
-    <section class="ui-card relative min-w-0 overflow-hidden">
+    <x-admin.card class="relative min-w-0 overflow-hidden">
         <x-admin.skeleton-table />
 
-        <div class="flex flex-col gap-4 border-b border-zinc-100 p-5 dark:border-white/10 md:flex-row md:items-center md:justify-between">
-            <div>
-                <p class="text-xs font-bold uppercase tracking-wide text-[var(--brand-primary)]">Control de acceso</p>
-                <h2 class="mt-1 text-lg font-bold text-zinc-950 dark:text-white">Gestión de usuarios</h2>
-                <p class="text-sm text-zinc-500 dark:text-zinc-400">Busca, filtra y administra roles de cuenta.</p>
-            </div>
-            <button wire:click="create" wire:loading.attr="disabled" wire:target="create,save,delete" class="btn-primary">
-                <x-icon name="plus" class="h-4 w-4" />
-                Nuevo usuario
-            </button>
-        </div>
+        <x-admin.page-header eyebrow="Control de acceso" title="Gestión de usuarios" description="Busca, filtra y administra roles de cuenta.">
+            <x-slot:actions>
+                <x-admin.button wire:click="create" wire:loading.attr="disabled" wire:target="create,save,delete">
+                    <x-icon name="plus" class="h-4 w-4" />
+                    Nuevo usuario
+                </x-admin.button>
+            </x-slot:actions>
+        </x-admin.page-header>
 
         <div class="grid gap-3 border-b border-zinc-100 p-5 dark:border-white/10 md:grid-cols-[minmax(0,1fr)_12rem]">
             <label class="relative">
                 <x-icon name="magnifying-glass" class="pointer-events-none absolute left-3 top-2.5 h-5 w-5 text-zinc-400" />
-                <input type="search" wire:model.live.debounce.300ms="search" placeholder="Buscar usuarios" class="form-control pl-10">
+                <x-admin.input type="search" wire:model.live.debounce.300ms="search" placeholder="Buscar usuarios" class="pl-10" />
             </label>
-            <select wire:model.live="role" class="form-control">
+            <x-admin.select wire:model.live="role">
                 <option value="">Todos los roles</option>
                 @foreach ($roles as $roleOption)
                     <option value="{{ $roleOption->name }}">{{ ucfirst($roleOption->name) }}</option>
                 @endforeach
-            </select>
+            </x-admin.select>
         </div>
 
-        <div class="overflow-x-auto">
-            <table class="table-modern min-w-[720px]">
+        <x-admin.table min-width="720px">
                 <thead>
                     <tr>
                         <th class="text-left font-bold">Nombre</th>
@@ -50,11 +46,11 @@
                             </td>
                             <td class="text-zinc-600 dark:text-zinc-300">{{ $user->email }}</td>
                             <td>
-                                <span class="rounded-full bg-zinc-100 px-3 py-1 text-xs font-bold text-zinc-700 dark:bg-white/10 dark:text-zinc-200">{{ $user->roles->pluck('name')->join(', ') ?: 'user' }}</span>
+                                <x-admin.badge>{{ $user->roles->pluck('name')->join(', ') ?: 'user' }}</x-admin.badge>
                             </td>
                             <td class="text-right">
-                                <button wire:click="edit({{ $user->id }})" wire:loading.attr="disabled" wire:target="edit({{ $user->id }})" class="btn-secondary mr-2 px-3 py-1.5">Editar</button>
-                                <button wire:click="confirmDelete({{ $user->id }})" wire:loading.attr="disabled" wire:target="confirmDelete({{ $user->id }})" class="btn-danger px-3 py-1.5">Eliminar</button>
+                                <x-admin.button variant="secondary" wire:click="edit({{ $user->id }})" wire:loading.attr="disabled" wire:target="edit({{ $user->id }})" class="mr-2 px-3 py-1.5">Editar</x-admin.button>
+                                <x-admin.button variant="danger" wire:click="confirmDelete({{ $user->id }})" wire:loading.attr="disabled" wire:target="confirmDelete({{ $user->id }})" class="px-3 py-1.5">Eliminar</x-admin.button>
                             </td>
                         </tr>
                     @empty
@@ -65,61 +61,51 @@
                         </tr>
                     @endforelse
                 </tbody>
-            </table>
-        </div>
+        </x-admin.table>
 
         <div class="border-t border-zinc-100 px-5 py-4 dark:border-white/10">
             {{ $users->links() }}
         </div>
-    </section>
+    </x-admin.card>
 
-    @if ($showForm)
-        <div class="fixed inset-0 z-50 flex items-end justify-center bg-zinc-950/50 p-4 backdrop-blur-sm sm:items-center" role="dialog" aria-modal="true" aria-labelledby="user-form-title">
-            <section class="ui-card max-h-[calc(100vh-2rem)] w-full max-w-xl overflow-y-auto p-5 sm:p-6">
-                <div class="mb-5 flex items-start justify-between gap-4">
-                    <div>
-                        <h2 id="user-form-title" class="text-lg font-bold text-zinc-950 dark:text-white">{{ $editingId ? 'Editar usuario' : 'Crear usuario' }}</h2>
-                        <p class="text-sm text-zinc-500 dark:text-zinc-400">Mantén credenciales y roles ordenados.</p>
-                    </div>
-                    <button type="button" wire:click="resetForm" class="admin-icon-button" aria-label="Cerrar formulario">
-                        <x-icon name="x-mark" class="h-5 w-5" />
-                    </button>
-                </div>
-
+    <x-admin.modal :show="$showForm" id="user-form" :title="$editingId ? 'Editar usuario' : 'Crear usuario'" description="Mantén credenciales y roles ordenados." class="max-w-xl">
+        <x-slot:close>
+            <x-admin.button variant="icon" wire:click="resetForm" aria-label="Cerrar formulario">
+                <x-icon name="x-mark" class="h-5 w-5" />
+            </x-admin.button>
+        </x-slot:close>
                 <form wire:submit="save" class="space-y-4">
                     <div>
                         <label class="block text-sm font-semibold text-zinc-700 dark:text-zinc-200">Nombre</label>
-                        <input wire:model="name" class="form-control mt-2">
+                        <x-admin.input wire:model="name" class="mt-2" />
                         @error('name') <p class="mt-1 text-sm text-red-600">{{ $message }}</p> @enderror
                     </div>
                     <div>
                         <label class="block text-sm font-semibold text-zinc-700 dark:text-zinc-200">Email</label>
-                        <input type="email" wire:model="email" class="form-control mt-2">
+                        <x-admin.input type="email" wire:model="email" class="mt-2" />
                         @error('email') <p class="mt-1 text-sm text-red-600">{{ $message }}</p> @enderror
                     </div>
                     <div>
                         <label class="block text-sm font-semibold text-zinc-700 dark:text-zinc-200">Contraseña</label>
-                        <input type="password" wire:model="password" class="form-control mt-2">
+                        <x-admin.input type="password" wire:model="password" class="mt-2" />
                         @error('password') <p class="mt-1 text-sm text-red-600">{{ $message }}</p> @enderror
                     </div>
                     <div>
                         <label class="block text-sm font-semibold text-zinc-700 dark:text-zinc-200">Rol</label>
-                        <select wire:model="selectedRole" class="form-control mt-2">
+                        <x-admin.select wire:model="selectedRole" class="mt-2">
                             @foreach ($roles as $roleOption)
                                 <option value="{{ $roleOption->name }}">{{ ucfirst($roleOption->name) }}</option>
                             @endforeach
-                        </select>
+                        </x-admin.select>
                         @error('selectedRole') <p class="mt-1 text-sm text-red-600">{{ $message }}</p> @enderror
                     </div>
                     <div class="flex flex-col gap-2 sm:flex-row">
-                        <button class="btn-primary" wire:loading.attr="disabled" wire:target="save">
-                            <x-icon name="arrow-path" class="hidden h-4 w-4 animate-spin" wire:loading.class.remove="hidden" wire:target="save" />Guardar</button>
-                        <button type="button" wire:click="resetForm" wire:loading.attr="disabled" wire:target="save" class="btn-secondary">Cancelar</button>
+                        <x-admin.button type="submit" wire:loading.attr="disabled" wire:target="save">
+                            <x-icon name="arrow-path" class="hidden h-4 w-4 animate-spin" wire:loading.class.remove="hidden" wire:target="save" />Guardar</x-admin.button>
+                        <x-admin.button variant="secondary" wire:click="resetForm" wire:loading.attr="disabled" wire:target="save">Cancelar</x-admin.button>
                     </div>
                 </form>
-            </section>
-        </div>
-    @endif
+    </x-admin.modal>
 
     <x-admin.confirm-modal
         :show="$confirmingDeleteId !== null"

@@ -21,6 +21,9 @@ Starter kit profesional para portafolios y paneles administrativos pequeños. In
 - Upload de imágenes de proyectos en disco `public` con validación de tipo, tamaño y dimensiones.
 - Filtros y buscador en usuarios/proyectos.
 - Módulo de apariencia para logo, colores del sistema y fuente.
+- Feature flags para activar/desactivar módulos.
+- API base con Laravel Sanctum.
+- Comandos Artisan para setup local y generación de CRUDs admin.
 - Seeders con cuentas demo listas para probar.
 - Landing pública con proyectos publicados.
 - Tests de acceso por rol, acciones Livewire, uploads y rutas protegidas.
@@ -67,6 +70,14 @@ php artisan storage:link
 php artisan migrate --seed
 npm run build
 ```
+
+Setup interactivo del starter:
+
+```bash
+php artisan starter:setup
+```
+
+El comando pregunta nombre del proyecto, dominio `.test`, base de datos MySQL, crea `.env` si hace falta, crea la base de datos, ejecuta `key:generate`, migraciones, seeders y `storage:link`. Puede generar un archivo Nginx de ejemplo en `infra/nginx/`, pero no toca `hosts` ni Nginx real.
 
 Servidor local con el script del proyecto:
 
@@ -135,6 +146,66 @@ DB_DATABASE=starter_kit_testing
 - Un admin no puede eliminar su propia cuenta ni dejar el sistema sin administradores.
 - Los slugs de proyectos se normalizan y se validan como URLs limpias.
 - Los uploads aceptan `jpg`, `jpeg`, `png` y `webp`, máximo 2 MB y dimensiones controladas.
+- La API usa tokens Sanctum con abilities.
+
+## Feature Flags
+
+Los módulos se controlan desde `config/starter.php` y `.env`:
+
+```dotenv
+STARTER_MODULE_PROJECTS=true
+STARTER_MODULE_APPEARANCE=true
+STARTER_MODULE_ACTIVITY_LOG=false
+STARTER_MODULE_API=true
+STARTER_MODULE_EXPORTS=false
+```
+
+Cuando un módulo está desactivado, sus rutas y menús se ocultan o devuelven `404`.
+
+## API
+
+La API vive bajo `/api` y usa Laravel Sanctum.
+
+Login con token:
+
+```bash
+curl -X POST http://starter-kit.test/api/login \
+  -H "Accept: application/json" \
+  -d "email=admin@example.com" \
+  -d "password=password" \
+  -d "device_name=local"
+```
+
+Usuario autenticado:
+
+```bash
+curl http://starter-kit.test/api/user \
+  -H "Accept: application/json" \
+  -H "Authorization: Bearer TU_TOKEN"
+```
+
+Proyectos publicados:
+
+```bash
+curl http://starter-kit.test/api/projects \
+  -H "Accept: application/json" \
+  -H "Authorization: Bearer TU_TOKEN"
+```
+
+Logout:
+
+```bash
+curl -X POST http://starter-kit.test/api/logout \
+  -H "Accept: application/json" \
+  -H "Authorization: Bearer TU_TOKEN"
+```
+
+Abilities incluidas:
+
+- `user:read`: consultar `/api/user`.
+- `projects:read`: consultar proyectos publicados. Solo se entrega a `admin` y `editor` cuando el módulo `projects` está activo.
+
+Las rutas API usan `throttle:api`.
 
 ## Tests
 
@@ -172,6 +243,47 @@ npm run dev
 
 Los aliases de middleware de rol están configurados en `bootstrap/app.php`.
 
+## Generar CRUD Admin
+
+```bash
+php artisan make:admin-crud Product
+```
+
+El comando genera:
+
+- Model
+- migration
+- factory
+- policy
+- seeder de permisos Spatie
+- componente Livewire admin
+- blade admin usando los componentes del starter
+- ruta admin
+- tests Pest básicos
+
+Después de generar un CRUD, revisa la migración, ejecuta:
+
+```bash
+php artisan migrate
+php artisan db:seed --class=ProductPermissionSeeder
+php artisan test
+```
+
+## Componentes Admin
+
+Componentes Blade disponibles:
+
+- `x-admin.page-header`
+- `x-admin.card`
+- `x-admin.modal`
+- `x-admin.table`
+- `x-admin.input`
+- `x-admin.select`
+- `x-admin.badge`
+- `x-admin.button`
+- `x-admin.empty-state`
+- `x-admin.confirm-modal`
+
 ## Imágenes De Proyectos
 
 Las imágenes se guardan en el disco `public`, dentro de `projects/`. Ejecuta `php artisan storage:link` después de instalar para exponerlas por `/storage`.
@@ -180,8 +292,11 @@ Las imágenes se guardan en el disco `public`, dentro de `projects/`. Ejecuta `p
 
 ```text
 app/Livewire/Admin/        Componentes Livewire del dashboard y CRUDs
+app/Console/Commands/      Comandos starter:setup y make:admin-crud
+app/Http/Controllers/Api/  Controladores API Sanctum
 app/Policies/              Autorización backend por rol
 app/Support/BrandTheme.php Tema visual configurable
+config/starter.php         Feature flags del starter
 database/seeders/          Roles, usuarios demo y proyectos demo
 resources/views/admin/     Entradas de vistas del panel admin
 resources/views/livewire/  Vistas Livewire
@@ -236,6 +351,14 @@ Revisa `DB_HOST`, `DB_PORT`, `DB_DATABASE`, `DB_USERNAME` y `DB_PASSWORD` en `.e
 - Tests de roles, accesos directos, CRUD, uploads, tema y protecciones del último admin.
 - Configuración local WSL con MySQL y Nginx para `starter-kit.test`.
 
+### Próxima versión
+
+- Comando `starter:setup` para preparar un proyecto local.
+- Comando `make:admin-crud` para generar CRUDs admin.
+- Feature flags desde `.env` y `config/starter.php`.
+- API base con Laravel Sanctum.
+- Componentes Blade reutilizables para el admin.
+
 ## Comandos Útiles
 
 ```bash
@@ -246,6 +369,8 @@ vendor/bin/pint
 npm run build
 composer audit
 npm audit --audit-level=low
+php artisan starter:setup
+php artisan make:admin-crud Product
 ```
 
 ## Licencia
