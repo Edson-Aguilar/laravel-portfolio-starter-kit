@@ -1,6 +1,6 @@
 # Uso Del Starter Kit
 
-Guía práctica para usar el starter kit en un proyecto local Laravel con WSL, MySQL, Nginx, Livewire, Tailwind CSS, feature flags y API Sanctum.
+Guía práctica para usar el Laravel Admin Starter Kit en un proyecto local Laravel con WSL, MySQL, Nginx, Livewire, Tailwind CSS, feature flags y API Sanctum.
 
 ## 1. Preparar Un Proyecto Local
 
@@ -143,7 +143,7 @@ STARTER_MODULE_EXPORTS=false
 
 Módulos disponibles:
 
-- `projects`: activa rutas, menú, dashboard y API de proyectos.
+- `projects`: activa rutas, menú, dashboard y API de proyectos demo.
 - `appearance`: activa el módulo de apariencia.
 - `activity_log`: reservado para auditoría/eventos.
 - `api`: activa endpoints API.
@@ -192,7 +192,7 @@ curl http://tu-dominio.test/api/user \
   -H "Authorization: Bearer TOKEN"
 ```
 
-### Proyectos Publicados
+### Proyectos Demo Publicados
 
 ```bash
 curl http://tu-dominio.test/api/projects \
@@ -215,7 +215,31 @@ curl -X POST http://tu-dominio.test/api/logout \
 
 Los tokens de `admin` y `editor` reciben `projects:read` si el módulo `projects` está activo.
 
-## 7. Testing Y Build
+## 7. Branding, Colores Y Fuentes
+
+Desde el panel admin entra a `Apariencia` para cambiar:
+
+- Nombre visual del starter.
+- Logo.
+- Color primario, secundario, acento y superficie oscura.
+- Fuente del sistema.
+
+Fuentes disponibles:
+
+- Inter
+- Nunito
+- Poppins
+- Roboto
+- Lato
+- Montserrat
+- Open Sans
+- Source Sans 3
+- Work Sans
+- Manrope
+
+La fuente se guarda en base de datos y se aplica con la variable CSS `--brand-font` en landing, admin layout, sidebar, navbar, tablas, formularios y modales. El starter usa stacks CSS locales/sistema definidos en `app/Support/BrandTheme.php`; no depende de Google Fonts remoto para compilar o correr localmente.
+
+## 8. Testing Y Build
 
 Tests:
 
@@ -242,7 +266,7 @@ composer audit
 npm audit --audit-level=low
 ```
 
-## 8. Troubleshooting
+## 9. Troubleshooting
 
 Permisos de Laravel:
 

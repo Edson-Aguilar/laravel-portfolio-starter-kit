@@ -1,6 +1,6 @@
-# Laravel Portfolio Starter Kit
+# Laravel Admin Starter Kit
 
-Starter kit profesional para portafolios y paneles administrativos pequeños. Incluye autenticación, autorización por roles, dashboard, CRUD de usuarios, CRUD de proyectos con uploads seguros, filtros, seeders demo, tema visual configurable y pruebas Pest.
+Starter kit profesional para iniciar proyectos Laravel rápidamente. Incluye autenticación, autorización por roles, dashboard admin, CRUD de usuarios, proyectos demo con uploads seguros, filtros, seeders demo, tema visual configurable, API Sanctum, feature flags y pruebas Pest.
 
 ## Stack
 
@@ -17,29 +17,29 @@ Starter kit profesional para portafolios y paneles administrativos pequeños. In
 - Dashboard administrativo responsive con soporte dark mode.
 - Roles base: `admin`, `editor`, `user`.
 - CRUD de usuarios protegido para `admin`.
-- CRUD de proyectos protegido para `admin` y `editor`.
-- Upload de imágenes de proyectos en disco `public` con validación de tipo, tamaño y dimensiones.
-- Filtros y buscador en usuarios/proyectos.
-- Módulo de apariencia para logo, colores del sistema y fuente.
+- Módulo de proyectos demo protegido para `admin` y `editor`, útil como referencia de CRUD.
+- Upload de imágenes de proyectos demo en disco `public` con validación de tipo, tamaño y dimensiones.
+- Filtros y buscador en usuarios y registros demo.
+- Módulo de apariencia para logo, colores del sistema y fuente configurable.
 - Feature flags para activar/desactivar módulos.
 - API base con Laravel Sanctum.
 - Comandos Artisan para setup local y generación de CRUDs admin.
 - Seeders con cuentas demo listas para probar.
-- Landing pública con proyectos publicados.
+- Landing pública enfocada en el starter kit, comandos, API, tests, seguridad y módulos.
 - Tests de acceso por rol, acciones Livewire, uploads y rutas protegidas.
 
 ## Capturas Y Features
 
-El starter kit está preparado para mostrar capturas del portafolio en esta sección. Sugerencia para tu portafolio: agrega imágenes en `public/docs/` y enlázalas aquí.
+El starter kit está preparado para documentar capturas del dashboard, CRUDs y módulos base. Sugerencia: agrega imágenes en `public/docs/` y enlázalas aquí.
 
 Features principales para mostrar:
 
 - Login y dashboard administrativo.
 - Sidebar moderna con modo light/dark.
 - CRUD de usuarios con roles.
-- CRUD de proyectos con filtros, buscador y subida de imágenes.
+- CRUD de proyectos demo con filtros, buscador y subida de imágenes.
 - Módulo de apariencia para logo, paleta y fuente.
-- Landing pública con proyectos publicados.
+- Landing pública con enfoque de starter kit reutilizable.
 
 ## Cuentas Demo
 
@@ -162,6 +162,40 @@ STARTER_MODULE_EXPORTS=false
 
 Cuando un módulo está desactivado, sus rutas y menús se ocultan o devuelven `404`.
 
+## Branding, Colores Y Fuentes
+
+El módulo `Apariencia` permite cambiar el nombre visual, logo, paleta y fuente del sistema desde el panel admin. Los valores se guardan como configuración en base de datos y se exponen al frontend mediante CSS variables:
+
+- `--brand-primary`
+- `--brand-secondary`
+- `--brand-accent`
+- `--brand-surface`
+- `--brand-dark-surface`
+- `--brand-font`
+
+Fuentes disponibles:
+
+- Inter
+- Nunito
+- Poppins
+- Roboto
+- Lato
+- Montserrat
+- Open Sans
+- Source Sans 3
+- Work Sans
+- Manrope
+
+Las fuentes se aplican con stacks CSS locales/sistema desde `app/Support/BrandTheme.php`. No se importa Google Fonts de forma remota, así que el build no depende de un proveedor externo. Si necesitas empaquetar fuentes reales, agrega los archivos al proyecto y ajusta `resources/css/app.css` con `@font-face`.
+
+Para cambiar el branding base por código revisa:
+
+```text
+app/Support/BrandTheme.php
+resources/views/welcome.blade.php
+resources/views/components/layouts/admin.blade.php
+```
+
 ## API
 
 La API vive bajo `/api` y usa Laravel Sanctum.
@@ -184,7 +218,7 @@ curl http://starter-kit.test/api/user \
   -H "Authorization: Bearer TU_TOKEN"
 ```
 
-Proyectos publicados:
+Proyectos demo publicados:
 
 ```bash
 curl http://starter-kit.test/api/projects \
@@ -284,9 +318,9 @@ Componentes Blade disponibles:
 - `x-admin.empty-state`
 - `x-admin.confirm-modal`
 
-## Imágenes De Proyectos
+## Imágenes De Proyectos Demo
 
-Las imágenes se guardan en el disco `public`, dentro de `projects/`. Ejecuta `php artisan storage:link` después de instalar para exponerlas por `/storage`.
+Las imágenes se guardan en el disco `public`, dentro de `projects/`. El modelo técnico sigue llamándose `Project` para evitar migraciones innecesarias, pero en la UI se presenta como proyectos demo o registros demo. Ejecuta `php artisan storage:link` después de instalar para exponerlas por `/storage`.
 
 ## Estructura Del Proyecto
 
@@ -297,7 +331,7 @@ app/Http/Controllers/Api/  Controladores API Sanctum
 app/Policies/              Autorización backend por rol
 app/Support/BrandTheme.php Tema visual configurable
 config/starter.php         Feature flags del starter
-database/seeders/          Roles, usuarios demo y proyectos demo
+database/seeders/          Roles, usuarios demo y registros demo
 resources/views/admin/     Entradas de vistas del panel admin
 resources/views/livewire/  Vistas Livewire
 resources/css/app.css      Estilos Tailwind y componentes UI
@@ -342,6 +376,10 @@ Revisa `DB_HOST`, `DB_PORT`, `DB_DATABASE`, `DB_USERNAME` y `DB_PASSWORD` en `.e
 
 ### v1.1.0
 
+- Reposiciona el producto como Laravel Admin Starter Kit reutilizable.
+- Actualiza landing, dashboard, login y módulo de proyectos para usar lenguaje de starter kit.
+- Amplía fuentes configurables y aplica `--brand-font` en landing, admin, guest, formularios, tablas y botones.
+- Documenta branding, colores, fuentes y módulos demo.
 - Agrega guía completa de uso del starter en `docs/USO_DEL_STARTER.md`.
 - Agrega comando `starter:setup` para preparar proyectos locales con MySQL y dominio `.test`.
 - Agrega comando `make:admin-crud` para generar CRUDs admin con Livewire, policy, permisos, migración, factory, vista y tests.
