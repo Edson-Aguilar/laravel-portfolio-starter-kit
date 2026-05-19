@@ -13,6 +13,12 @@ Route::get('/', function () {
     ]);
 })->name('home');
 
+Route::get('/docs', function () {
+    return response()->file(base_path('docs/USO_DEL_STARTER.md'), [
+        'Content-Type' => 'text/plain; charset=UTF-8',
+    ]);
+})->name('docs');
+
 Route::middleware('guest')->group(function (): void {
     Route::get('/login', Login::class)->name('login');
 });

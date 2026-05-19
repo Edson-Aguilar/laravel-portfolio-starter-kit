@@ -3,7 +3,7 @@
     $nav = [
         ['label' => __('Panel'), 'route' => 'dashboard', 'icon' => 'chart-bar', 'visible' => true],
         ['label' => __('Usuarios'), 'route' => 'admin.users', 'icon' => 'users', 'visible' => auth()->user()?->hasRole('admin')],
-        ['label' => __('Proyectos'), 'route' => 'admin.projects', 'icon' => 'folder', 'visible' => config('starter.modules.projects') && auth()->user()?->hasAnyRole(['admin', 'editor'])],
+        ['label' => __('Proyectos demo'), 'route' => 'admin.projects', 'icon' => 'folder', 'visible' => config('starter.modules.projects') && auth()->user()?->hasAnyRole(['admin', 'editor'])],
         ['label' => __('Apariencia'), 'route' => 'admin.appearance', 'icon' => 'paint-brush', 'visible' => config('starter.modules.appearance') && auth()->user()?->hasRole('admin')],
     ];
 @endphp
@@ -13,7 +13,7 @@
 <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
-    <title>{{ $title ?? config('app.name', 'Laravel Portfolio Starter Kit') }}</title>
+    <title>{{ $title ?? config('app.name', 'Laravel Admin Starter Kit') }}</title>
     <script>
         (() => {
             const mode = localStorage.getItem('theme-mode') || 'light';

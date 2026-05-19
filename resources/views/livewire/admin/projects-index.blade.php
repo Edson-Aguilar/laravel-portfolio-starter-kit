@@ -2,11 +2,11 @@
     <x-admin.card class="relative min-w-0 overflow-hidden">
         <x-admin.skeleton-table />
 
-        <x-admin.page-header eyebrow="Portfolio" title="Gestión de proyectos" description="Administra contenido, imágenes y estado de publicación.">
+        <x-admin.page-header eyebrow="Datos demo" title="Proyectos demo" description="Administra registros de ejemplo para validar CRUD, filtros, uploads y estados.">
             <x-slot:actions>
                 <x-admin.button wire:click="create" wire:loading.attr="disabled" wire:target="create,save,delete">
                     <x-icon name="plus" class="h-4 w-4" />
-                    Nuevo proyecto
+                    Nuevo registro
                 </x-admin.button>
             </x-slot:actions>
         </x-admin.page-header>
@@ -14,7 +14,7 @@
         <div class="grid gap-3 border-b border-zinc-100 p-5 dark:border-white/10 md:grid-cols-[minmax(0,1fr)_12rem]">
             <label class="relative">
                 <x-icon name="magnifying-glass" class="pointer-events-none absolute left-3 top-2.5 h-5 w-5 text-zinc-400" />
-                <x-admin.input type="search" wire:model.live.debounce.300ms="search" placeholder="Buscar proyectos" class="pl-10" />
+                <x-admin.input type="search" wire:model.live.debounce.300ms="search" placeholder="Buscar registros demo" class="pl-10" />
             </label>
             <x-admin.select wire:model.live="status">
                 <option value="">Todos los estados</option>
@@ -27,7 +27,7 @@
         <x-admin.table min-width="780px">
                 <thead>
                     <tr>
-                        <th class="text-left font-bold">Proyecto</th>
+                        <th class="text-left font-bold">Registro demo</th>
                         <th class="text-left font-bold">Estado</th>
                         <th class="text-left font-bold">Publicado</th>
                         <th class="text-right font-bold">Acciones</th>
@@ -65,7 +65,7 @@
                     @empty
                         <tr>
                             <td colspan="4">
-                                <x-admin.empty-state icon="folder" title="No se encontraron proyectos" description="Crea tu primer proyecto o ajusta los filtros activos." />
+                                <x-admin.empty-state icon="folder" title="No se encontraron registros demo" description="Crea el primer registro demo o ajusta los filtros activos." />
                             </td>
                         </tr>
                     @endforelse
@@ -77,7 +77,7 @@
         </div>
     </x-admin.card>
 
-    <x-admin.modal :show="$showForm" id="project-form" :title="$editingId ? 'Editar proyecto' : 'Crear proyecto'" description="Mantén el contenido del portafolio claro y visual." class="max-w-2xl">
+    <x-admin.modal :show="$showForm" id="project-form" :title="$editingId ? 'Editar registro demo' : 'Crear registro demo'" description="Usa este módulo como referencia para CRUDs con imagen, filtros y estados." class="max-w-2xl">
         <x-slot:close>
             <x-admin.button variant="icon" wire:click="resetForm" aria-label="Cerrar formulario">
                 <x-icon name="x-mark" class="h-5 w-5" />
@@ -129,9 +129,9 @@
 
     <x-admin.confirm-modal
         :show="$confirmingDeleteId !== null"
-        title="Eliminar proyecto"
-        description="Este proyecto y su imagen se eliminarán."
-        confirm="Eliminar proyecto"
+        title="Eliminar registro demo"
+        description="Este registro demo y su imagen se eliminarán."
+        confirm="Eliminar registro"
         action="delete"
     />
 </div>

@@ -6,8 +6,8 @@
                     <x-icon name="sparkles" class="h-4 w-4" />
                     Starter kit listo
                 </div>
-                <h2 class="mt-5 max-w-3xl text-3xl font-bold tracking-tight sm:text-4xl">Gestiona el contenido de tu portafolio con un panel Laravel profesional.</h2>
-                <p class="mt-3 max-w-2xl text-sm text-white/75 sm:text-base">Usuarios, roles, proyectos, subidas y apariencia listos para un flujo profesional.</p>
+                <h2 class="mt-5 max-w-3xl text-3xl font-bold tracking-tight sm:text-4xl">Arranca proyectos Laravel con una base admin profesional.</h2>
+                <p class="mt-3 max-w-2xl text-sm text-white/75 sm:text-base">Usuarios, roles, registros demo, uploads, API, feature flags y apariencia listos para adaptar.</p>
             </div>
             <div class="rounded-2xl border border-white/20 bg-white/12 p-4 backdrop-blur">
                 <p class="text-sm font-medium text-white/70">Porcentaje publicado</p>
@@ -29,7 +29,7 @@
         @if (config('starter.modules.projects'))
             <div class="ui-card p-5">
                 <div class="flex items-center justify-between">
-                    <p class="text-sm font-medium text-zinc-500 dark:text-zinc-400">Proyectos</p>
+                    <p class="text-sm font-medium text-zinc-500 dark:text-zinc-400">Proyectos demo</p>
                     <div class="rounded-xl bg-emerald-50 p-2 text-emerald-600 dark:bg-emerald-400/10 dark:text-emerald-300">
                         <x-icon name="folder" class="h-5 w-5" />
                     </div>
@@ -52,8 +52,8 @@
         <section class="ui-card overflow-hidden">
             <div class="flex items-center justify-between border-b border-zinc-100 px-5 py-4 dark:border-white/10">
                 <div>
-                    <h2 class="font-bold text-zinc-950 dark:text-white">Proyectos recientes</h2>
-                    <p class="text-sm text-zinc-500 dark:text-zinc-400">Entradas del portafolio actualizadas recientemente.</p>
+                    <h2 class="font-bold text-zinc-950 dark:text-white">Registros demo recientes</h2>
+                    <p class="text-sm text-zinc-500 dark:text-zinc-400">Datos de ejemplo actualizados recientemente para validar el CRUD.</p>
                 </div>
                 <a href="{{ route('admin.projects') }}" class="btn-secondary hidden sm:inline-flex">Ver todos</a>
             </div>
@@ -67,7 +67,7 @@
                         <span class="w-fit rounded-full bg-zinc-100 px-3 py-1 text-xs font-bold text-zinc-600 dark:bg-white/10 dark:text-zinc-200">{{ ['draft' => 'Borrador', 'published' => 'Publicado', 'archived' => 'Archivado'][$project->status] ?? $project->status }}</span>
                     </div>
                 @empty
-                    <x-admin.empty-state icon="folder" title="Aún no hay proyectos" description="Crea tu primer proyecto para alimentar este panel." />
+                    <x-admin.empty-state icon="folder" title="Aún no hay registros demo" description="Crea el primer registro demo para validar el módulo." />
                 @endforelse
             </div>
         </section>

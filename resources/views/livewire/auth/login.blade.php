@@ -1,6 +1,6 @@
 <section class="w-full max-w-md rounded border border-white/10 bg-white p-8 text-zinc-950 shadow-2xl">
     <div class="mb-8">
-        <p class="text-sm font-medium text-zinc-500">Laravel Portfolio Starter Kit</p>
+        <p class="text-sm font-medium text-zinc-500">Laravel Admin Starter Kit</p>
         <h1 class="mt-2 text-2xl font-semibold tracking-tight">Iniciar sesión</h1>
     </div>
 
