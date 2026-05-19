@@ -29,7 +29,7 @@ class BrandTheme
     public static function defaults(): array
     {
         return [
-            'brand_name' => 'Portfolio Kit',
+            'brand_name' => 'Laravel Admin Starter Kit',
             'logo_path' => null,
             'primary' => '#2563eb',
             'secondary' => '#14b8a6',
@@ -38,6 +38,11 @@ class BrandTheme
             'dark_surface' => '#09090b',
             'font_family' => 'Inter',
         ];
+    }
+
+    public static function fonts(): array
+    {
+        return array_keys(self::fontStacks());
     }
 
     public static function cssVariables(): string
@@ -56,12 +61,23 @@ class BrandTheme
 
     public static function fontStack(string $font): string
     {
-        return match ($font) {
+        return self::fontStacks()[$font] ?? self::fontStacks()[self::defaults()['font_family']];
+    }
+
+    private static function fontStacks(): array
+    {
+        return [
+            'Inter' => 'Inter, ui-sans-serif, system-ui, sans-serif',
+            'Nunito' => 'Nunito, ui-sans-serif, system-ui, sans-serif',
+            'Poppins' => 'Poppins, ui-sans-serif, system-ui, sans-serif',
+            'Roboto' => 'Roboto, Arial, ui-sans-serif, system-ui, sans-serif',
+            'Lato' => 'Lato, ui-sans-serif, system-ui, sans-serif',
+            'Montserrat' => 'Montserrat, ui-sans-serif, system-ui, sans-serif',
+            'Open Sans' => '"Open Sans", ui-sans-serif, system-ui, sans-serif',
+            'Source Sans 3' => '"Source Sans 3", ui-sans-serif, system-ui, sans-serif',
+            'Work Sans' => '"Work Sans", ui-sans-serif, system-ui, sans-serif',
             'Manrope' => 'Manrope, ui-sans-serif, system-ui, sans-serif',
-            'Plus Jakarta Sans' => '"Plus Jakarta Sans", ui-sans-serif, system-ui, sans-serif',
-            'Nunito Sans' => '"Nunito Sans", ui-sans-serif, system-ui, sans-serif',
-            default => 'Inter, ui-sans-serif, system-ui, sans-serif',
-        };
+        ];
     }
 
     private static function sanitize(array $theme): array
@@ -74,7 +90,7 @@ class BrandTheme
             }
         }
 
-        if (! in_array($theme['font_family'] ?? null, ['Inter', 'Manrope', 'Plus Jakarta Sans', 'Nunito Sans'], true)) {
+        if (! in_array($theme['font_family'] ?? null, self::fonts(), true)) {
             $theme['font_family'] = $defaults['font_family'];
         }
 

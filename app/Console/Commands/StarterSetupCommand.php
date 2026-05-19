@@ -15,7 +15,7 @@ class StarterSetupCommand extends Command
 
     public function handle(): int
     {
-        $projectName = (string) $this->ask('Nombre del proyecto', 'Portfolio Kit');
+        $projectName = (string) $this->ask('Nombre del proyecto', 'Laravel Admin Starter Kit');
         $domain = $this->normalizeDomain((string) $this->ask('Dominio local .test', 'starter-kit.test'));
         $database = $this->normalizeDatabase((string) $this->ask('Base de datos MySQL', 'starter_kit'));
 

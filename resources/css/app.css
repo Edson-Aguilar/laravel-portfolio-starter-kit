@@ -30,11 +30,20 @@
     body {
         background: #f8fafc;
         color: #18181b;
+        font-family: var(--brand-font), ui-sans-serif, system-ui, sans-serif;
     }
 
     .dark body {
         background: #050507;
         color: #f4f4f5;
+    }
+
+    button,
+    input,
+    select,
+    textarea,
+    table {
+        font-family: inherit;
     }
 
     .sidebar-open .admin-sidebar {

@@ -102,7 +102,7 @@
                         @endif
                     </div>
                     <div>
-                        <p class="font-bold text-zinc-950 dark:text-white">{{ $brandName ?: 'Portfolio Kit' }}</p>
+                        <p class="font-bold text-zinc-950 dark:text-white">{{ $brandName ?: 'Laravel Admin Starter Kit' }}</p>
                         <p class="text-sm text-zinc-500 dark:text-zinc-400">{{ $fontFamily }}</p>
                     </div>
                 </div>

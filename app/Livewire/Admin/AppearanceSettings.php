@@ -96,7 +96,7 @@ class AppearanceSettings extends Component
             'accent' => ['required', 'regex:/^#[0-9A-Fa-f]{6}$/'],
             'surface' => ['required', 'regex:/^#[0-9A-Fa-f]{6}$/'],
             'darkSurface' => ['required', 'regex:/^#[0-9A-Fa-f]{6}$/'],
-            'fontFamily' => ['required', Rule::in(['Inter', 'Manrope', 'Plus Jakarta Sans', 'Nunito Sans'])],
+            'fontFamily' => ['required', Rule::in(BrandTheme::fonts())],
             'logo' => ['nullable', 'image', 'mimes:jpg,jpeg,png,webp', 'max:2048', 'dimensions:max_width=2000,max_height=2000'],
         ]);
 
@@ -200,7 +200,7 @@ class AppearanceSettings extends Component
         $this->authorize('viewAny', SystemSetting::class);
 
         return view('livewire.admin.appearance-settings', [
-            'fonts' => ['Inter', 'Manrope', 'Plus Jakarta Sans', 'Nunito Sans'],
+            'fonts' => BrandTheme::fonts(),
         ]);
     }
 }
