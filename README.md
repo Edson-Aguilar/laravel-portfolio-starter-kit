@@ -340,6 +340,17 @@ Revisa `DB_HOST`, `DB_PORT`, `DB_DATABASE`, `DB_USERNAME` y `DB_PASSWORD` en `.e
 
 ## Changelog
 
+### v1.1.0
+
+- Agrega guía completa de uso del starter en `docs/USO_DEL_STARTER.md`.
+- Agrega comando `starter:setup` para preparar proyectos locales con MySQL y dominio `.test`.
+- Agrega comando `make:admin-crud` para generar CRUDs admin con Livewire, policy, permisos, migración, factory, vista y tests.
+- Agrega feature flags desde `.env` y `config/starter.php` para módulos `projects`, `appearance`, `activity_log`, `api` y `exports`.
+- Agrega API base con Laravel Sanctum, login por token, logout, `/api/user`, API Resource de proyectos, abilities y rate limiting.
+- Extrae componentes Blade reutilizables para el admin y actualiza usuarios/proyectos para usarlos.
+- Mejora el dashboard y las rutas para respetar módulos desactivados.
+- Agrega tests de API y feature flags.
+
 ### v1.0.0
 
 - Starter kit Laravel con Livewire, Tailwind CSS, Spatie Permission y Pest.
@@ -350,14 +361,6 @@ Revisa `DB_HOST`, `DB_PORT`, `DB_DATABASE`, `DB_USERNAME` y `DB_PASSWORD` en `.e
 - UI responsive con dark mode, sidebar colapsable, empty states, skeleton loaders, toasts y modales.
 - Tests de roles, accesos directos, CRUD, uploads, tema y protecciones del último admin.
 - Configuración local WSL con MySQL y Nginx para `starter-kit.test`.
-
-### Próxima versión
-
-- Comando `starter:setup` para preparar un proyecto local.
-- Comando `make:admin-crud` para generar CRUDs admin.
-- Feature flags desde `.env` y `config/starter.php`.
-- API base con Laravel Sanctum.
-- Componentes Blade reutilizables para el admin.
 
 ## Comandos Útiles
 
