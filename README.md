@@ -271,8 +271,8 @@ npm run dev
 
 ## Roles Y Acceso
 
-- `admin`: dashboard, CRUD de usuarios, CRUD de proyectos, apariencia.
-- `editor`: dashboard, CRUD de proyectos.
+- `admin`: dashboard, CRUD de usuarios, CRUD de proyectos demo, apariencia.
+- `editor`: dashboard, CRUD de proyectos demo.
 - `user`: dashboard.
 
 Los aliases de middleware de rol están configurados en `bootstrap/app.php`.
@@ -373,6 +373,15 @@ sudo service nginx reload
 Revisa `DB_HOST`, `DB_PORT`, `DB_DATABASE`, `DB_USERNAME` y `DB_PASSWORD` en `.env`. Para tests, confirma que exista la base `starter_kit_testing`.
 
 ## Changelog
+
+### v1.2.0
+
+- Deja el starter preparado como base reutilizable para proyectos Laravel reales.
+- Revisa README y `docs/USO_DEL_STARTER.md` con instalación MySQL, Nginx `.test`, comandos, feature flags, API, branding, colores y fuentes.
+- Confirma que `starter:setup` y `make:admin-crud` estén registrados y disponibles en Artisan.
+- Verifica `.env.example` con MySQL, locale español y flags del starter.
+- Confirma que no haya lenguaje viejo del producto ni secretos reales en documentación o código.
+- Ejecuta suite completa de tests, build frontend, Pint y auditorías de Composer/npm sin hallazgos.
 
 ### v1.1.0
 
